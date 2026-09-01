@@ -1,380 +1,407 @@
+/* =====================================================================
+   DESIGN TOKENS
+   ===================================================================== */
 :root {
-  /* ===== COLOR PALETTE ===== */
-  --bg: #FAFAF7;        /* page background ("paper") */
-  --ink: #16191C;       /* primary text color */
-  --muted: #5B6169;     /* secondary/greyed-out text (dates, labels, captions) */
-  --accent: #1F5F5B;    /* the one accent color — links, cursor, hover states */
-  --hairline: #E4E2DC;  /* thin divider lines between sections */
-  --tag-bg: #F1F0EC;    /* background behind every skill/tech tag pill */
+  /* Colors */
+  --color-paper: #FAFAF7;      /* page background */
+  --color-ink: #16191C;        /* primary text */
+  --color-muted: #5B6169;      /* secondary text — dates, labels, captions */
+  --color-accent: #1F5F5B;     /* the one accent color — links, cursor, hover states */
+  --color-hairline: #E4E2DC;   /* thin divider lines */
+  --color-tag-background: #F1F0EC; /* background behind every skill/tech tag pill */
 
-  /* Skill-tag text colors — one per category, used by the .tag--* classes below */
-  --tag-lang: #2551C9;    /* Languages (Python, JS, C) */
-  --tag-backend: #1F7A4D; /* Web/Backend (Flask, HTML, REST APIs) */
-  --tag-db: #7C3AED;      /* Database (MySQL) */
-  --tag-ai: #C2540A;      /* AI/ML/Data libraries */
-  --tag-core: #A8324D;    /* Core CS (OOP, DSA, Algorithms) */
-  --tag-tools: #55606B;   /* Tools (Git, GitHub, MS Office) */
+  /* Skill-tag text colors — one per category */
+  --color-tag-language: #2551C9;
+  --color-tag-backend: #1F7A4D;
+  --color-tag-database: #7C3AED;
+  --color-tag-ai: #C2540A;
+  --color-tag-core: #A8324D;
+  --color-tag-tools: #55606B;
 
-  /* ===== FONTS ===== */
-  --serif: "Newsreader", Georgia, serif;             /* headings / big titles */
-  --sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; /* body text */
-  --mono: "JetBrains Mono", ui-monospace, monospace; /* tags, terminal-style labels, dates */
+  /* Fonts */
+  --font-serif: "Newsreader", Georgia, serif;              /* headings */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; /* body text */
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;  /* tags, terminal lines, dates */
 
-  --max-w: 760px; /* the width of the centered text column used everywhere */
+  /* Layout */
+  --content-width: 960px;   /* width of the centered column used by every section */
+  --prose-width: 660px;     /* narrower width used just for paragraphs, for comfortable reading */
 }
 
 * { box-sizing: border-box; }
 
+/* =====================================================================
+   BASE / RESET
+   ===================================================================== */
 html {
   scroll-behavior: smooth;
-  /* Safety net: guarantees no horizontal scroll can ever appear, no matter
-     what a full-viewport element (like the canvas) does. */
-  overflow-x: hidden;
-  /* Custom scrollbar (Firefox): thumb color, track color */
-  scrollbar-width: thin;
-  scrollbar-color: var(--hairline) var(--bg);
+  overflow-x: hidden; /* guarantees no horizontal scrollbar can ever appear */
+  scrollbar-width: thin;                          /* Firefox scrollbar */
+  scrollbar-color: var(--color-hairline) var(--color-paper);
 }
-
-/* Custom scrollbar (Chrome / Edge / Safari) — matches the paper/ink palette
-   instead of the browser's default grey scrollbar. */
-::-webkit-scrollbar {
-  width: 10px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--hairline);
-  border-radius: 6px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
-}
-
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
 
+/* Custom scrollbar for Chrome / Edge / Safari, to match the site palette
+   instead of the browser's default grey scrollbar. */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--color-paper); }
+::-webkit-scrollbar-thumb { background: var(--color-hairline); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--sans);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
 a {
-  color: var(--accent);
+  color: var(--color-accent);
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: border-color 150ms ease;
 }
 a:hover, a:focus-visible {
-  border-bottom-color: var(--accent);
+  border-bottom-color: var(--color-accent);
 }
 a:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
   border-radius: 2px;
 }
 
-/* ===== NAV BAR (the sticky top bar with "PM" and the section links) ===== */
-.nav {
+/* Shared centered column — every section's content sits inside one of these */
+.page {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+@media (max-width: 640px) {
+  .page { padding: 0 20px; }
+}
+
+/* =====================================================================
+   SITE HEADER (the sticky top bar with the "PM" logo and nav links)
+   ===================================================================== */
+.site-header {
   position: sticky;
   top: 0;
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 24px;
-  background: rgba(250, 250, 247, 0.88); /* semi-transparent so the animated background blurs through it */
+  padding: 18px 32px;
+  background: rgba(250, 250, 247, 0.88); /* semi-transparent so the animation blurs through it */
   backdrop-filter: blur(6px);
-  border-bottom: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--color-hairline);
   flex-wrap: wrap;
   gap: 10px;
 }
-/* The "PM" monogram badge, top-left of the nav (links to #top) */
-.nav__mark {
+
+.site-logo {
   border: none;
   display: inline-flex;
 }
-.nav__mark span {
-  font-family: var(--mono);
+.site-logo span {
+  font-family: var(--font-mono);
   font-weight: 500;
   font-size: 13px;
   letter-spacing: 0.02em;
-  color: var(--bg);
-  background: var(--ink);
+  color: var(--color-paper);
+  background: var(--color-ink);
   padding: 5px 9px;
   border-radius: 5px;
   transition: background 150ms ease;
 }
-.nav__mark:hover span { background: var(--accent); }
-/* The row of "About / Skills / Projects / Experience / Contact" links */
-.nav__links {
+.site-logo:hover span { background: var(--color-accent); }
+
+.site-nav {
   display: flex;
-  gap: 22px;
   flex-wrap: wrap;
 }
-.nav__links a {
-  font-family: var(--mono);
+.site-nav a {
+  font-family: var(--font-mono);
   font-size: 13px;
-  color: var(--muted);
+  color: var(--color-muted);
   border: none;
-  margin-left: 22px; /* fallback spacing for browsers that don't support flex `gap` */
+  margin-left: 22px;
 }
-.nav__links a:first-child { margin-left: 0; }
-.nav__links a:hover { color: var(--ink); border-bottom-color: var(--ink); }
+.site-nav a:first-child { margin-left: 0; }
+.site-nav a:hover { color: var(--color-ink); border-bottom-color: var(--color-ink); }
 
-/* The centered text column that holds every section (About, Skills, Projects...) */
-main {
-  max-width: var(--max-w);
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-/* The thin horizontal divider line between sections (fades in from grey to accent and back) */
-.rule {
-  border: none;
-  height: 1px;
-  max-width: var(--max-w);
-  margin: 0 auto;
-  background: linear-gradient(90deg, var(--hairline) 0%, var(--accent) 50%, var(--hairline) 100%);
-  opacity: 0.35;
+@media (max-width: 640px) {
+  .site-header { padding: 14px 20px; }
 }
 
 /* =====================================================================
-   TERMINAL-COMMAND LABELS
-   These are the small "$ cat about.md" / "$ ls ./skills" style lines that
-   sit at the top of every section, plus the "~/piyush $ whoami_" line in
-   the hero. Each one is built from up to 4 pieces:
-     .prompt         → the wrapping <p> element itself
-     .prompt__path   → the "~/piyush" part (hero only)
-     .prompt__sep    → the " $ " separator (colored with the accent)
-     .prompt__cmd    → the actual command text ("whoami")
-     .cursor         → the blinking "_" after the command
-     .prompt--label  → used instead, for the simpler one-line section
-                       labels like "$ cat about.md" (no separate spans)
+   ANIMATED CONTENT REGION
+   This wrapper holds everything between the header and the footer.
+   `position: relative` makes it the positioning anchor for the dot-wave
+   canvas inside it (see .dot-wave below and script.js). Because the
+   canvas is sized to THIS element rather than the browser viewport, the
+   animation naturally starts right after the header and ends exactly
+   where this wrapper ends — i.e. right before the footer.
    ===================================================================== */
-.prompt {
-  font-family: var(--mono);
-  font-size: 13px;
-  letter-spacing: 0.01em;
-  margin: 0 0 20px 0;
-}
-.prompt--label {
-  color: var(--muted);
-}
-.prompt__path {
-  color: var(--muted);
-}
-.prompt__sep {
-  color: var(--accent);
-  font-weight: 500;
-}
-.prompt__cmd {
-  color: var(--ink);
-}
-/* The blinking "_" cursor after "whoami" in the hero */
-.cursor {
-  color: var(--accent);
-  animation: blink 1.1s step-end infinite;
-}
-@keyframes blink {
-  0%, 45% { opacity: 1; }
-  50%, 100% { opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cursor { animation: none; opacity: 1; }
+.animated-content {
+  position: relative;
 }
 
-/* ===== HERO (the very first section — name, headline, intro, social links) ===== */
-.hero {
-  padding: 96px 0 56px 0;
-}
-.hero__canvas {
-  /* Full-page animated dot background (drawn by script.js).
-     Uses `inset: 0` with NO width/height in vw/vh — those units count the
-     scrollbar as part of the viewport width on desktop, which was causing
-     horizontal overflow (stray scrollbar + content pushed off-center). */
-  position: fixed;
+.dot-wave {
+  position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: -1;
 }
-.hero__title {
-  font-family: var(--serif);
+
+/* =====================================================================
+   TERMINAL-LINE MOTIF
+   The small "$ cat about.md" style lines at the top of every section,
+   plus the "~/piyush $ whoami_" line in the hero. Two ways this is used:
+     1. Hero version — built from separate spans so each part can have
+        its own color: .terminal-user / .terminal-separator /
+        .terminal-command / .terminal-cursor
+     2. Section-label version — just add .terminal-label to a
+        .terminal-line and put the plain text straight inside it
+        (e.g. "$ cat about.md"), no spans needed.
+   ===================================================================== */
+.terminal-line {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  margin: 0 0 20px 0;
+}
+.terminal-label {
+  color: var(--color-muted);
+}
+.terminal-user {
+  color: var(--color-muted);
+}
+.terminal-separator {
+  color: var(--color-accent);
   font-weight: 500;
-  font-size: clamp(34px, 6vw, 52px);
+}
+.terminal-command {
+  color: var(--color-ink);
+}
+.terminal-cursor {
+  color: var(--color-accent);
+  animation: cursor-blink 1.1s step-end infinite;
+}
+@keyframes cursor-blink {
+  0%, 45% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .terminal-cursor { animation: none; opacity: 1; }
+}
+
+/* A thin gradient divider line between sections (fades grey → accent → grey) */
+.divider {
+  border: none;
+  height: 1px;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  background: linear-gradient(90deg, var(--color-hairline) 0%, var(--color-accent) 50%, var(--color-hairline) 100%);
+  opacity: 0.35;
+}
+
+/* =====================================================================
+   HERO SECTION (name, headline, intro paragraph, social links)
+   ===================================================================== */
+.hero-section {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 96px 32px 56px 32px;
+}
+.hero-headline {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(34px, 5.5vw, 56px);
   line-height: 1.14;
   margin: 0 0 24px 0;
-  color: var(--ink);
+  color: var(--color-ink);
   letter-spacing: -0.01em;
 }
-.hero__sub {
+.hero-intro {
   font-size: 17px;
-  color: var(--muted);
-  max-width: 560px;
+  color: var(--color-muted);
+  max-width: var(--prose-width);
   margin: 0 0 32px 0;
 }
-.hero__links {
+.hero-social {
   display: flex;
   gap: 24px;
   flex-wrap: wrap;
 }
-.hero__links a {
-  font-family: var(--mono);
+.hero-social a {
+  font-family: var(--font-mono);
   font-size: 13px;
 }
 
-/* ===== GENERIC SECTION SPACING (applies to every <section>: About, Skills, Projects...) ===== */
-section {
-  padding: 56px 0;
+@media (max-width: 640px) {
+  .hero-section { padding: 64px 20px 40px 20px; }
+  .hero-social { gap: 16px; }
 }
 
-/* Paragraph text inside the About section */
-.about__text {
+/* =====================================================================
+   GENERIC CONTENT SECTIONS (About, Skills, Projects, Experience)
+   Each is a <section class="content-section"> whose inner content sits
+   at the same --content-width as everything else.
+   ===================================================================== */
+.content-section {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 56px 32px;
+}
+@media (max-width: 640px) {
+  .content-section { padding: 40px 20px; }
+}
+
+.section-text {
   font-size: 16px;
-  max-width: 620px;
+  max-width: var(--prose-width);
   margin: 0 0 18px 0;
-  color: var(--ink);
+  color: var(--color-ink);
 }
 
-/* ===== SKILLS ===== */
-/* One .skill-group per category (Languages, Web/Backend, Database...) */
-.skill-group {
+/* =====================================================================
+   SKILLS
+   .skill-category = one group (Languages, Web/Backend, Database...)
+   .skill-category-name = the small grey uppercase label above the tags
+   ===================================================================== */
+.skill-category {
   margin-bottom: 22px;
 }
-/* The small grey category name above each row of tags, e.g. "LANGUAGES" */
-.skill-group__label {
+.skill-category-name {
   display: block;
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 12px;
-  color: var(--muted);
+  color: var(--color-muted);
   margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
-/* ===== SKILL / TECH TAGS =====
-   The small colored-rectangle pills (styled after LeetCode's topic tags).
+/* =====================================================================
+   SKILL / TECH TAGS
+   The small colored-rectangle pills, styled after LeetCode's topic tags.
    Used in two places: the Skills section, and inside every project card.
-   .tags   = the flex-wrap row that holds a group of pills
-   .tag    = one pill's shared shape/padding/background
-   .tag--* = the text color for that pill's category (see the --tag-* color
-             variables at the top of this file for the actual hex values) */
-.tags {
+   .tag-row     = the flex-wrap row that holds a group of pills
+   .skill-tag   = shared pill shape/padding/background
+   .skill-tag-* = text color per category (see --color-tag-* variables above)
+   ===================================================================== */
+.tag-row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
-.tag {
-  font-family: var(--mono);
+.skill-tag {
+  font-family: var(--font-mono);
   font-size: 12.5px;
   padding: 4px 10px;
   border-radius: 6px;
-  background: var(--tag-bg);
+  background: var(--color-tag-background);
   white-space: nowrap;
-  transition: transform 150ms ease, background 150ms ease;
+  transition: background 150ms ease;
 }
-/* Tags darken slightly when you hover the tag itself, or hover the project
-   card that contains them */
-.project:hover .tag,
-.skills .tag:hover {
+.project-card:hover .skill-tag,
+#skills .skill-tag:hover {
   background: #ECEBE5;
 }
-.tag--lang    { color: var(--tag-lang); }
-.tag--backend { color: var(--tag-backend); }
-.tag--db      { color: var(--tag-db); }
-.tag--ai      { color: var(--tag-ai); }
-.tag--core    { color: var(--tag-core); }
-.tag--tools   { color: var(--tag-tools); }
+.skill-tag-language { color: var(--color-tag-language); }
+.skill-tag-backend  { color: var(--color-tag-backend); }
+.skill-tag-database { color: var(--color-tag-database); }
+.skill-tag-ai        { color: var(--color-tag-ai); }
+.skill-tag-core      { color: var(--color-tag-core); }
+.skill-tag-tools     { color: var(--color-tag-tools); }
 
 /* =====================================================================
-   PROJECTS
-   Each project is one <article class="project"> block. On hover, the
-   whole card gets a faint accent tint, nudges right 2px, and a thin accent
-   bar fades in on the left edge (the ::before pseudo-element below).
+   PROJECT CARDS
+   On hover: faint accent tint, nudges right 2px, thin accent bar fades
+   in on the left edge (the ::before pseudo-element below).
    ===================================================================== */
-.project {
-  padding: 28px 20px 28px 20px;
-  margin: 0 -20px; /* pulls the hover-highlight background out to the edges of the text column */
-  border-top: 1px solid var(--hairline);
+.project-card {
+  padding: 28px 20px;
+  margin: 0 -20px;
+  border-top: 1px solid var(--color-hairline);
   border-radius: 8px;
   transition: background 200ms ease, transform 200ms ease;
   position: relative;
 }
-.project:first-of-type { border-top: none; padding-top: 8px; }
-/* The thin accent-colored bar on the left edge, hidden until hover */
-.project::before {
+.project-card:first-of-type { border-top: none; padding-top: 8px; }
+.project-card::before {
+  /* the thin accent-colored bar on the left edge, hidden until hover */
   content: "";
   position: absolute;
   left: 0;
   top: 28px;
   bottom: 28px;
   width: 2px;
-  background: var(--accent);
+  background: var(--color-accent);
   border-radius: 2px;
   opacity: 0;
   transition: opacity 200ms ease;
 }
-.project:first-of-type::before { top: 8px; }
-.project:hover {
+.project-card:first-of-type::before { top: 8px; }
+.project-card:hover {
   background: rgba(31, 95, 91, 0.035);
   transform: translateX(2px);
 }
-.project:hover::before {
+.project-card:hover::before {
   opacity: 0.5;
 }
 
-.project__year {
-  /* "YEAR 4 · PUBLISHED — IEEE CONIT 2025" style line above each title */
-  font-family: var(--mono);
+.project-meta {
+  /* "YEAR 4 · PUBLISHED — IEEE CONIT 2025" line above each title */
+  font-family: var(--font-mono);
   font-size: 11.5px;
-  color: var(--muted);
+  color: var(--color-muted);
   letter-spacing: 0.04em;
   margin: 0 0 8px 0;
 }
-.project__title {
-  font-family: var(--serif);
+.project-title {
+  font-family: var(--font-serif);
   font-size: 24px;
   font-weight: 500;
   margin: 0 0 12px 0;
 }
-.project__desc {
-  color: var(--ink);
+.project-description {
+  color: var(--color-ink);
   font-size: 15.5px;
-  max-width: 620px;
+  max-width: var(--prose-width);
   margin: 0 0 16px 0;
 }
-.project__links {
-  /* Row holding "View on GitHub ↗" and (for the flagship project) the
-     "Live demo coming soon" note */
+.project-links {
+  /* row holding "View on GitHub ↗" and the "Live demo coming soon" note */
   margin-top: 16px;
   display: flex;
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
 }
-.project__links a {
-  font-family: var(--mono);
+.project-links a {
+  font-family: var(--font-mono);
   font-size: 13px;
 }
-.project__note {
-  font-family: var(--mono);
+.project-note {
+  font-family: var(--font-mono);
   font-size: 12px;
-  color: var(--muted);
+  color: var(--color-muted);
   font-style: italic;
 }
 
 /* =====================================================================
-   EXPERIENCE (Standard Chartered Bank entry)
-   .exp-row = the top line: company name + role on the left,
-              dates on the right, laid out with space-between
+   EXPERIENCE
+   .experience-header = the top row (company + role on the left,
+   dates on the right, laid out with space-between)
    ===================================================================== */
-.exp-row {
+.experience-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -382,83 +409,80 @@ section {
   flex-wrap: wrap;
   margin-bottom: 12px;
 }
-.exp-row__title {
-  font-family: var(--serif);
+.experience-company {
+  font-family: var(--font-serif);
   font-size: 20px;
   font-weight: 500;
   margin: 0;
 }
-.exp-row__role {
+.experience-role {
   font-size: 14px;
-  color: var(--muted);
+  color: var(--color-muted);
   margin: 4px 0 0 0;
 }
-.exp-row__date {
-  font-family: var(--mono);
+.experience-date {
+  font-family: var(--font-mono);
   font-size: 12.5px;
-  color: var(--muted);
+  color: var(--color-muted);
   white-space: nowrap;
 }
-.exp-row__desc {
+.experience-summary {
   font-size: 15px;
-  color: var(--ink);
-  max-width: 620px;
+  color: var(--color-ink);
+  max-width: var(--prose-width);
 }
 
-/* ===== CONTACT / FOOTER (the very last section) ===== */
-.contact {
+@media (max-width: 640px) {
+  .experience-header { flex-direction: column; align-items: flex-start; }
+}
+
+/* =====================================================================
+   SITE FOOTER (contact section — lives outside .animated-content)
+   ===================================================================== */
+.site-footer {
   padding: 56px 0 96px 0;
 }
-.contact__title {
-  font-family: var(--serif);
+.footer-title {
+  font-family: var(--font-serif);
   font-weight: 500;
   font-size: 34px;
   margin: 0 0 24px 0;
 }
-.contact__links {
+.footer-links {
   display: flex;
   gap: 24px;
   flex-wrap: wrap;
   margin-bottom: 32px;
 }
-.contact__links a {
-  font-family: var(--mono);
+.footer-links a {
+  font-family: var(--font-mono);
   font-size: 14px;
 }
-.contact__meta {
-  font-family: var(--mono);
+.footer-meta {
+  font-family: var(--font-mono);
   font-size: 12px;
-  color: var(--muted);
+  color: var(--color-muted);
 }
 
 /* =====================================================================
    SCROLL-REVEAL ANIMATION
-   Every section has class="... fade-section" in the HTML. script.js uses
-   an IntersectionObserver to add "is-visible" the first time each one
+   Any element with class="reveal" starts invisible/shifted down; script.js
+   uses an IntersectionObserver to add "reveal-visible" the first time it
    scrolls into view, which triggers this fade+rise transition.
    ===================================================================== */
-.fade-section {
+.reveal {
   opacity: 0;
   transform: translateY(10px);
   transition: opacity 500ms ease, transform 500ms ease;
 }
-.fade-section.is-visible {
+.reveal-visible {
   opacity: 1;
   transform: translateY(0);
 }
 @media (prefers-reduced-motion: reduce) {
-  .fade-section {
+  .reveal {
     opacity: 1;
     transform: none;
     transition: none;
   }
-}
-
-/* ===== RESPONSIVE OVERRIDES (small phone screens) ===== */
-@media (max-width: 640px) {
-  .nav { padding: 14px 18px; }
-  main { padding: 0 18px; }
-  .hero { padding: 64px 0 40px 0; }
-  .hero__links { gap: 16px; }
-  .exp-row { flex-direction: column; align-items: flex-start; }
 }

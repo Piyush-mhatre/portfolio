@@ -1,37 +1,51 @@
-// Subtle fade-up on scroll. No other motion on the page.
-const sections = document.querySelectorAll(".fade-section");
+// =====================================================================
+// SCROLL-REVEAL — fades/rises each .reveal element into view the first
+// time it enters the viewport. Skips straight to visible for anyone with
+// reduced-motion enabled at the OS level.
+// =====================================================================
+const revealElements = document.querySelectorAll(".reveal");
 
-const observer = new IntersectionObserver(
+const revealObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        entry.target.classList.add("is-visible");
-        observer.unobserve(entry.target);
+        entry.target.classList.add("reveal-visible");
+        revealObserver.unobserve(entry.target);
       }
     });
   },
   { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
 );
 
-sections.forEach((section) => observer.observe(section));
+revealElements.forEach((el) => revealObserver.observe(el));
 
-// Reveal hero immediately (it's above the fold, no need to wait on scroll)
-const hero = document.querySelector(".hero");
-if (hero) {
-  requestAnimationFrame(() => hero.classList.add("is-visible"));
+// The hero is above the fold on first load — reveal it immediately rather
+// than waiting for a scroll event that may never come.
+const heroSection = document.querySelector(".hero-section");
+if (heroSection) {
+  requestAnimationFrame(() => heroSection.classList.add("reveal-visible"));
 }
 
-// --- Full-page dot-grid wave ---
-// A quiet field of dots fixed behind all content, rippling like a slow sine
-// wave. Stays pinned to the viewport as the page scrolls over it.
+// =====================================================================
+// DOT-WAVE BACKGROUND ANIMATION
+//
+// A quiet field of dots that ripples like a slow sine wave, sitting
+// behind everything inside the .animated-content wrapper (hero through
+// experience). It is sized to that WRAPPER, not the browser viewport —
+// so it starts right below the header and ends exactly where the
+// wrapper ends, right before the footer. It scrolls normally with the
+// page (it is not pinned/fixed), which is what makes it stop in the
+// right place instead of covering the whole screen forever.
+// =====================================================================
 (function initDotWave() {
-  const canvas = document.getElementById("heroCanvas");
-  if (!canvas) return;
+  const canvas = document.getElementById("dotWave");
+  const wrapper = document.querySelector(".animated-content");
+  if (!canvas || !wrapper) return;
 
   const ctx = canvas.getContext("2d");
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const SPACING = 26;
+  const SPACING = 32;
   const RADIUS = 1.7;
   const AMPLITUDE = 11;      // vertical displacement in px
   const WAVELENGTH = 150;    // px per full sine cycle
@@ -54,12 +68,16 @@ if (hero) {
   }
 
   function resize() {
-    const rect = canvas.getBoundingClientRect();
-    width = rect.width;
-    height = rect.height;
+    // Size the canvas to the wrapper's full content height (which can be
+    // much taller than the viewport, since it spans hero → experience),
+    // not just the visible viewport.
+    width = wrapper.offsetWidth;
+    height = wrapper.offsetHeight;
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = width * dpr;
     canvas.height = height * dpr;
+    canvas.style.width = width + "px";
+    canvas.style.height = height + "px";
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     buildDots();
   }
@@ -99,10 +117,25 @@ if (hero) {
     }
   }
 
-  window.addEventListener("resize", () => {
+  function handleResize() {
     resize();
     if (prefersReducedMotion) draw(0);
-  });
+  }
+
+  window.addEventListener("resize", handleResize);
+
+  // Recompute once web fonts finish loading — font swaps can change text
+  // height/line-wrapping, which changes how tall the wrapper is.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(handleResize);
+  }
+
+  // Recompute if the wrapper's own height changes for any other reason
+  // (e.g. content added later, images loading, window zoom).
+  if (typeof ResizeObserver !== "undefined") {
+    const ro = new ResizeObserver(() => handleResize());
+    ro.observe(wrapper);
+  }
 
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) stop();

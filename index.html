@@ -5,277 +5,292 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Piyush Mhatre — Python Developer</title>
 <meta name="description" content="Portfolio of Piyush Santosh Mhatre — Python & backend developer." />
+<link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="icon" href="data:,">
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<!--
-  IMPORTANT: this canvas must stay OUTSIDE the <main>/.hero structure, as a
-  direct child of <body>, before <nav>. Any ancestor with a CSS `transform`
-  (like the .fade-section scroll-reveal effect) turns into a "containing
-  block" for position:fixed children, which would trap this canvas inside
-  that ancestor's box instead of the real browser viewport. Keeping it here,
-  with no transformed ancestor above it, is what makes it span edge-to-edge.
--->
-<canvas class="hero__canvas" id="heroCanvas" aria-hidden="true"></canvas>
-
-<nav class="nav">
-  <a href="#top" class="nav__mark"><span>PM</span></a>
-  <div class="nav__links">
+<!-- ============================================================
+     SITE HEADER — the sticky top bar. Sits OUTSIDE the animated
+     region on purpose, so the dot animation never renders behind it.
+     ============================================================ -->
+<header class="site-header">
+  <a href="#top" class="site-logo"><span>PM</span></a>
+  <nav class="site-nav">
     <a href="#about">About</a>
     <a href="#skills">Skills</a>
     <a href="#projects">Projects</a>
     <a href="#experience">Experience</a>
     <a href="#contact">Contact</a>
-  </div>
-</nav>
+  </nav>
+</header>
 
-<main id="top">
+<!-- ============================================================
+     ANIMATED CONTENT REGION
+     Everything between the header and the footer lives in here.
+     The dot-wave canvas is the first child, absolutely positioned
+     to exactly cover this wrapper — so the animation begins right
+     below the header and ends right where this div ends, just
+     before the footer. It scrolls normally with the page (it is
+     NOT fixed/pinned), which is what makes it stop in the right
+     place instead of covering the whole screen forever.
+     See script.js → initDotWave() for how the canvas is sized.
+     ============================================================ -->
+<div class="animated-content" id="top">
+  <canvas class="dot-wave" id="dotWave" aria-hidden="true"></canvas>
 
-  <!-- HERO -->
-  <section class="hero fade-section">
-    <p class="prompt">
-      <span class="prompt__path">~/piyush</span><span class="prompt__sep"> $ </span><span class="prompt__cmd">whoami</span><span class="cursor">_</span>
-    </p>
-    <h1 class="hero__title">Backend developer.<br>I make software behave.</h1>
-    <p class="hero__sub">
-      Piyush Santosh Mhatre — Python developer building Flask/FastAPI backends, OCR
-      &amp; NLP pipelines, and financial data systems. IEEE CONIT 2025 published
-      researcher, currently rebuilding my flagship project with FastAPI and React.
-    </p>
-    <div class="hero__links">
-      <a href="https://github.com/Piyush-mhatre" target="_blank" rel="noopener">GitHub ↗</a>
-      <a href="https://www.linkedin.com/in/piyush-mhatre-399536267/" target="_blank" rel="noopener">LinkedIn ↗</a>
-      <a href="https://leetcode.com/u/piyush_11122/" target="_blank" rel="noopener">LeetCode ↗</a>
-      <a href="mailto:piyushsm121212@gmail.com">Email ↗</a>
-    </div>
-  </section>
+  <main class="page">
 
-  <hr class="rule" />
-
-  <!-- ABOUT -->
-  <section class="about fade-section" id="about">
-    <p class="prompt prompt--label">$ cat about.md</p>
-    <p class="about__text">
-      For the past year I've been part of Standard Chartered's technology
-      organization, building internal tools that automate manual workflows and
-      working hands-on with enterprise-scale data systems in Trade Finance — the
-      kind of environment where a broken process affects thousands of transactions,
-      not just one team.
-    </p>
-    <p class="about__text">
-      Alongside that, I've shipped five independent applications on my own — from
-      OCR pipelines to AI-powered financial tools — and co-authored a paper accepted
-      at IEEE CONIT 2025. I'm a Computer Engineering graduate with Honours in AI
-      &amp; Machine Learning, and right now I'm rebuilding my flagship project's
-      backend on FastAPI and adding a React frontend, documenting the process as I go.
-    </p>
-  </section>
-
-  <hr class="rule" />
-
-  <!-- SKILLS -->
-  <section class="skills fade-section" id="skills">
-    <p class="prompt prompt--label">$ ls ./skills</p>
-
-    <div class="skill-group">
-      <span class="skill-group__label">Languages</span>
-      <div class="tags">
-        <span class="tag tag--lang">Python</span>
-        <span class="tag tag--lang">JavaScript</span>
-        <span class="tag tag--lang">C</span>
-      </div>
-    </div>
-
-    <div class="skill-group">
-      <span class="skill-group__label">Web / Backend</span>
-      <div class="tags">
-        <span class="tag tag--backend">Flask</span>
-        <span class="tag tag--backend">HTML5</span>
-        <span class="tag tag--backend">CSS3</span>
-        <span class="tag tag--backend">PHP</span>
-        <span class="tag tag--backend">REST APIs</span>
-      </div>
-    </div>
-
-    <div class="skill-group">
-      <span class="skill-group__label">Database</span>
-      <div class="tags">
-        <span class="tag tag--db">MySQL</span>
-      </div>
-    </div>
-
-    <div class="skill-group">
-      <span class="skill-group__label">AI / ML / Data</span>
-      <div class="tags">
-        <span class="tag tag--ai">Scikit-learn</span>
-        <span class="tag tag--ai">NLTK</span>
-        <span class="tag tag--ai">BERT</span>
-        <span class="tag tag--ai">Gemini AI</span>
-        <span class="tag tag--ai">YFinance</span>
-        <span class="tag tag--ai">Tesseract OCR</span>
-        <span class="tag tag--ai">PyMuPDF</span>
-      </div>
-    </div>
-
-    <div class="skill-group">
-      <span class="skill-group__label">Core CS</span>
-      <div class="tags">
-        <span class="tag tag--core">OOP</span>
-        <span class="tag tag--core">Data Structures</span>
-        <span class="tag tag--core">Algorithms</span>
-      </div>
-    </div>
-
-    <div class="skill-group">
-      <span class="skill-group__label">Tools</span>
-      <div class="tags">
-        <span class="tag tag--tools">Git</span>
-        <span class="tag tag--tools">GitHub</span>
-        <span class="tag tag--tools">MS Office</span>
-      </div>
-    </div>
-  </section>
-
-  <hr class="rule" />
-
-  <!-- PROJECTS -->
-  <section class="projects fade-section" id="projects">
-    <p class="prompt prompt--label">$ ls ./projects</p>
-
-    <article class="project fade-section">
-      <p class="project__year">YEAR 4 · PUBLISHED — IEEE CONIT 2025</p>
-      <h3 class="project__title">Explainable AI Financial Advisor</h3>
-      <p class="project__desc">
-        A multi-feature financial planning platform: a stock analyzer with Piotroski
-        F-Score, price forecasting and candlestick charts, a gold price analyzer, and an
-        investment growth dashboard — integrating five external APIs and ML models into
-        one application. Includes a Gemini AI chatbot for financial guidance, a
-        BERT-based news sentiment module, and a Decision Tree-based investment
-        recommender.
+    <!-- HERO — name, headline, one-line intro, social links -->
+    <section class="hero-section reveal" id="hero">
+      <p class="terminal-line">
+        <span class="terminal-user">~/piyush</span><span class="terminal-separator"> $ </span><span class="terminal-command">whoami</span><span class="terminal-cursor">_</span>
       </p>
-      <div class="tags">
-        <span class="tag tag--lang">Python</span>
-        <span class="tag tag--backend">Flask</span>
-        <span class="tag tag--backend">HTML/CSS/JS</span>
-        <span class="tag tag--ai">YFinance</span>
-        <span class="tag tag--ai">Financial Modeling Prep API</span>
-        <span class="tag tag--ai">BERT</span>
-        <span class="tag tag--ai">Gemini AI</span>
-        <span class="tag tag--ai">Scikit-learn</span>
-      </div>
-      <div class="project__links">
-        <a href="https://github.com/Piyush-mhatre" target="_blank" rel="noopener">View on GitHub ↗</a>
-        <span class="project__note">Live demo coming soon — currently rebuilding on FastAPI + React</span>
-      </div>
-    </article>
-
-    <article class="project fade-section">
-      <p class="project__year">YEAR 3</p>
-      <h3 class="project__title">Voice-Based Gmail System for Visually Impaired</h3>
-      <p class="project__desc">
-        A full-featured, accessibility-first web email client — compose, send, inbox,
-        sent, trash — integrating Gmail via SMTP/IMAP, with credential-based
-        authentication and session handling across every page. Every action carries
-        clear visual and audio feedback, and HTML email bodies are parsed into clean
-        plain text for accessible reading.
+      <h1 class="hero-headline">Backend developer.<br>I make software behave.</h1>
+      <p class="hero-intro">
+        Piyush Santosh Mhatre — Python developer building Flask/FastAPI backends, OCR
+        &amp; NLP pipelines, and financial data systems. IEEE CONIT 2025 published
+        researcher, currently rebuilding my flagship project with FastAPI and React.
       </p>
-      <div class="tags">
-        <span class="tag tag--lang">Python</span>
-        <span class="tag tag--backend">Flask</span>
-        <span class="tag tag--backend">HTML/CSS/JS</span>
-        <span class="tag tag--ai">SMTP (smtplib)</span>
-        <span class="tag tag--ai">IMAP (imaplib)</span>
-        <span class="tag tag--ai">Gmail API</span>
+      <div class="hero-social">
+        <a href="https://github.com/Piyush-mhatre" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://www.linkedin.com/in/piyush-mhatre-399536267/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a href="https://leetcode.com/u/piyush_11122/" target="_blank" rel="noopener">LeetCode ↗</a>
+        <a href="mailto:piyushsm121212@gmail.com">Email ↗</a>
       </div>
-      <div class="project__links">
-        <a href="https://github.com/Piyush-mhatre" target="_blank" rel="noopener">View on GitHub ↗</a>
-      </div>
-    </article>
+    </section>
 
-    <article class="project fade-section">
-      <p class="project__year">YEAR 2</p>
-      <h3 class="project__title">Newspaper Summarization Tool</h3>
-      <p class="project__desc">
-        An OCR + NLP pipeline that extracts headlines and summarizes articles directly
-        from scanned or image-based PDFs. Uses PyMuPDF to rasterize pages, Tesseract for
-        text extraction, a custom heuristic to detect headlines from capitalization and
-        formatting patterns, and an NLTK pipeline — tokenization, stopword removal,
-        frequency ranking — to generate concise summaries.
+    <hr class="divider" />
+
+    <!-- ABOUT -->
+    <section class="content-section reveal" id="about">
+      <p class="terminal-line terminal-label">$ cat about.md</p>
+      <p class="section-text">
+        For the past year I've been part of Standard Chartered's technology
+        organization, building internal tools that automate manual workflows and
+        working hands-on with enterprise-scale data systems in Trade Finance — the
+        kind of environment where a broken process affects thousands of transactions,
+        not just one team.
       </p>
-      <div class="tags">
-        <span class="tag tag--lang">Python</span>
-        <span class="tag tag--backend">Flask</span>
-        <span class="tag tag--ai">PyMuPDF</span>
-        <span class="tag tag--ai">Tesseract OCR</span>
-        <span class="tag tag--ai">NLTK</span>
-      </div>
-      <div class="project__links">
-        <a href="https://github.com/Piyush-mhatre" target="_blank" rel="noopener">View on GitHub ↗</a>
-      </div>
-    </article>
-
-    <article class="project fade-section">
-      <p class="project__year">YEAR 1</p>
-      <h3 class="project__title">Notes Management System</h3>
-      <p class="project__desc">
-        An interactive notes web app supporting rich text and image insertion, with
-        secure login, session management, and MySQL-backed persistence and retrieval.
+      <p class="section-text">
+        Alongside that, I've shipped five independent applications on my own — from
+        OCR pipelines to AI-powered financial tools — and co-authored a paper accepted
+        at IEEE CONIT 2025. I'm a Computer Engineering graduate with Honours in AI
+        &amp; Machine Learning, and right now I'm rebuilding my flagship project's
+        backend on FastAPI and adding a React frontend, documenting the process as I go.
       </p>
-      <div class="tags">
-        <span class="tag tag--backend">HTML</span>
-        <span class="tag tag--backend">CSS</span>
-        <span class="tag tag--lang">JavaScript</span>
-        <span class="tag tag--db">MySQL</span>
-        <span class="tag tag--backend">PHP</span>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- SKILLS -->
+    <section class="content-section reveal" id="skills">
+      <p class="terminal-line terminal-label">$ ls ./skills</p>
+
+      <div class="skill-category">
+        <span class="skill-category-name">Languages</span>
+        <div class="tag-row">
+          <span class="skill-tag skill-tag-language">Python</span>
+          <span class="skill-tag skill-tag-language">JavaScript</span>
+          <span class="skill-tag skill-tag-language">C</span>
+        </div>
       </div>
-      <div class="project__links">
-        <a href="https://github.com/Piyush-mhatre" target="_blank" rel="noopener">View on GitHub ↗</a>
+
+      <div class="skill-category">
+        <span class="skill-category-name">Web / Backend</span>
+        <div class="tag-row">
+          <span class="skill-tag skill-tag-backend">Flask</span>
+          <span class="skill-tag skill-tag-backend">HTML5</span>
+          <span class="skill-tag skill-tag-backend">CSS3</span>
+          <span class="skill-tag skill-tag-backend">PHP</span>
+          <span class="skill-tag skill-tag-backend">REST APIs</span>
+        </div>
       </div>
-    </article>
-  </section>
 
-  <hr class="rule" />
-
-  <!-- EXPERIENCE -->
-  <section class="experience fade-section" id="experience">
-    <p class="prompt prompt--label">$ cat experience.log</p>
-    <div class="exp-row">
-      <div class="exp-row__left">
-        <h3 class="exp-row__title">Standard Chartered Bank</h3>
-        <p class="exp-row__role">Technology &amp; Operations, Trade Services</p>
+      <div class="skill-category">
+        <span class="skill-category-name">Database</span>
+        <div class="tag-row">
+          <span class="skill-tag skill-tag-database">MySQL</span>
+        </div>
       </div>
-      <p class="exp-row__date">Aug 2025 – Aug 2026 · 1 Year</p>
-    </div>
-    <p class="exp-row__desc">
-      Built and shipped internal automation tools within Standard Chartered's
-      technology organization, reducing manual effort across high-volume enterprise
-      workflows. Worked hands-on with enterprise data and systems — LC processing,
-      SLA tracking, regulatory reporting — developing a strong foundation in how
-      large-scale financial systems actually operate.
-    </p>
-  </section>
 
-  <hr class="rule" />
+      <div class="skill-category">
+        <span class="skill-category-name">AI / ML / Data</span>
+        <div class="tag-row">
+          <span class="skill-tag skill-tag-ai">Scikit-learn</span>
+          <span class="skill-tag skill-tag-ai">NLTK</span>
+          <span class="skill-tag skill-tag-ai">BERT</span>
+          <span class="skill-tag skill-tag-ai">Gemini AI</span>
+          <span class="skill-tag skill-tag-ai">YFinance</span>
+          <span class="skill-tag skill-tag-ai">Tesseract OCR</span>
+          <span class="skill-tag skill-tag-ai">PyMuPDF</span>
+        </div>
+      </div>
 
-  <!-- CONTACT -->
-  <footer class="contact fade-section" id="contact">
-    <p class="prompt prompt--label">$ contact --info</p>
-    <h2 class="contact__title">Let's build something.</h2>
-    <div class="contact__links">
+      <div class="skill-category">
+        <span class="skill-category-name">Core CS</span>
+        <div class="tag-row">
+          <span class="skill-tag skill-tag-core">OOP</span>
+          <span class="skill-tag skill-tag-core">Data Structures</span>
+          <span class="skill-tag skill-tag-core">Algorithms</span>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <span class="skill-category-name">Tools</span>
+        <div class="tag-row">
+          <span class="skill-tag skill-tag-tools">Git</span>
+          <span class="skill-tag skill-tag-tools">GitHub</span>
+          <span class="skill-tag skill-tag-tools">MS Office</span>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- PROJECTS -->
+    <section class="content-section reveal" id="projects">
+      <p class="terminal-line terminal-label">$ ls ./projects</p>
+
+      <article class="project-card reveal">
+        <p class="project-meta">YEAR 4 · PUBLISHED — IEEE CONIT 2025</p>
+        <h3 class="project-title">Explainable AI Financial Advisor</h3>
+        <p class="project-description">
+          A multi-feature financial planning platform: a stock analyzer with Piotroski
+          F-Score, price forecasting and candlestick charts, a gold price analyzer, and an
+          investment growth dashboard — integrating five external APIs and ML models into
+          one application. Includes a Gemini AI chatbot for financial guidance, a
+          BERT-based news sentiment module, and a Decision Tree-based investment
+          recommender.
+        </p>
+        <div class="tag-row">
+          <span class="skill-tag skill-tag-language">Python</span>
+          <span class="skill-tag skill-tag-backend">Flask</span>
+          <span class="skill-tag skill-tag-backend">HTML/CSS/JS</span>
+          <span class="skill-tag skill-tag-ai">YFinance</span>
+          <span class="skill-tag skill-tag-ai">Financial Modeling Prep API</span>
+          <span class="skill-tag skill-tag-ai">BERT</span>
+          <span class="skill-tag skill-tag-ai">Gemini AI</span>
+          <span class="skill-tag skill-tag-ai">Scikit-learn</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/Piyush-mhatre" target="_blank" rel="noopener">View on GitHub ↗</a>
+          <span class="project-note">Live demo coming soon — currently rebuilding on FastAPI + React</span>
+        </div>
+      </article>
+
+      <article class="project-card reveal">
+        <p class="project-meta">YEAR 3</p>
+        <h3 class="project-title">Voice-Based Gmail System for Visually Impaired</h3>
+        <p class="project-description">
+          A full-featured, accessibility-first web email client — compose, send, inbox,
+          sent, trash — integrating Gmail via SMTP/IMAP, with credential-based
+          authentication and session handling across every page. Every action carries
+          clear visual and audio feedback, and HTML email bodies are parsed into clean
+          plain text for accessible reading.
+        </p>
+        <div class="tag-row">
+          <span class="skill-tag skill-tag-language">Python</span>
+          <span class="skill-tag skill-tag-backend">Flask</span>
+          <span class="skill-tag skill-tag-backend">HTML/CSS/JS</span>
+          <span class="skill-tag skill-tag-ai">SMTP (smtplib)</span>
+          <span class="skill-tag skill-tag-ai">IMAP (imaplib)</span>
+          <span class="skill-tag skill-tag-ai">Gmail API</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/Piyush-mhatre" target="_blank" rel="noopener">View on GitHub ↗</a>
+        </div>
+      </article>
+
+      <article class="project-card reveal">
+        <p class="project-meta">YEAR 2</p>
+        <h3 class="project-title">Newspaper Summarization Tool</h3>
+        <p class="project-description">
+          An OCR + NLP pipeline that extracts headlines and summarizes articles directly
+          from scanned or image-based PDFs. Uses PyMuPDF to rasterize pages, Tesseract for
+          text extraction, a custom heuristic to detect headlines from capitalization and
+          formatting patterns, and an NLTK pipeline — tokenization, stopword removal,
+          frequency ranking — to generate concise summaries.
+        </p>
+        <div class="tag-row">
+          <span class="skill-tag skill-tag-language">Python</span>
+          <span class="skill-tag skill-tag-backend">Flask</span>
+          <span class="skill-tag skill-tag-ai">PyMuPDF</span>
+          <span class="skill-tag skill-tag-ai">Tesseract OCR</span>
+          <span class="skill-tag skill-tag-ai">NLTK</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/Piyush-mhatre" target="_blank" rel="noopener">View on GitHub ↗</a>
+        </div>
+      </article>
+
+      <article class="project-card reveal">
+        <p class="project-meta">YEAR 1</p>
+        <h3 class="project-title">Notes Management System</h3>
+        <p class="project-description">
+          An interactive notes web app supporting rich text and image insertion, with
+          secure login, session management, and MySQL-backed persistence and retrieval.
+        </p>
+        <div class="tag-row">
+          <span class="skill-tag skill-tag-backend">HTML</span>
+          <span class="skill-tag skill-tag-backend">CSS</span>
+          <span class="skill-tag skill-tag-language">JavaScript</span>
+          <span class="skill-tag skill-tag-database">MySQL</span>
+          <span class="skill-tag skill-tag-backend">PHP</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/Piyush-mhatre" target="_blank" rel="noopener">View on GitHub ↗</a>
+        </div>
+      </article>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- EXPERIENCE -->
+    <section class="content-section reveal" id="experience">
+      <p class="terminal-line terminal-label">$ cat experience.log</p>
+      <div class="experience-entry">
+        <div class="experience-header">
+          <div>
+            <h3 class="experience-company">Standard Chartered Bank</h3>
+            <p class="experience-role">Technology &amp; Operations, Trade Services</p>
+          </div>
+          <p class="experience-date">Aug 2025 – Aug 2026 · 1 Year</p>
+        </div>
+        <p class="experience-summary">
+          Built and shipped internal automation tools within Standard Chartered's
+          technology organization, reducing manual effort across high-volume enterprise
+          workflows. Worked hands-on with enterprise data and systems — LC processing,
+          SLA tracking, regulatory reporting — developing a strong foundation in how
+          large-scale financial systems actually operate.
+        </p>
+      </div>
+    </section>
+
+  </main>
+</div>
+<!-- ==================== END of animated-content wrapper ==================== -->
+
+<!-- ============================================================
+     FOOTER — outside the animated region on purpose, per spec:
+     the dot-wave should stop before the footer, not run behind it.
+     ============================================================ -->
+<footer class="site-footer reveal" id="contact">
+  <div class="page">
+    <p class="terminal-line terminal-label">$ contact --info</p>
+    <h2 class="footer-title">Let's build something.</h2>
+    <div class="footer-links">
       <a href="mailto:piyushsm121212@gmail.com">piyushsm121212@gmail.com</a>
       <a href="https://github.com/Piyush-mhatre" target="_blank" rel="noopener">GitHub ↗</a>
       <a href="https://www.linkedin.com/in/piyush-mhatre-399536267/" target="_blank" rel="noopener">LinkedIn ↗</a>
       <a href="https://leetcode.com/u/piyush_11122/" target="_blank" rel="noopener">LeetCode ↗</a>
     </div>
-    <p class="contact__meta">Nerul, Maharashtra · Built by Piyush Mhatre</p>
-  </footer>
-
-</main>
+    <p class="footer-meta">Nerul, Maharashtra · Built by Piyush Mhatre</p>
+  </div>
+</footer>
 
 <script src="script.js"></script>
 </body>
