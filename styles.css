@@ -218,6 +218,18 @@ a:focus-visible {
   max-width: var(--content-width);
   margin: 0 auto;
   padding: 96px 32px 56px 32px;
+  border-radius: 16px;
+  transition: background-color 280ms ease, backdrop-filter 280ms ease, box-shadow 280ms ease;
+}
+/* On hover (or keyboard focus inside it), the section becomes a solid
+   "card" over the dot-wave animation so the text is easy to read instead
+   of competing with the moving background. Fades back to fully
+   transparent the moment the pointer/focus leaves. */
+.hero-section:hover,
+.hero-section:focus-within {
+  background-color: rgba(250, 250, 247, 0.95);
+  backdrop-filter: blur(3px);
+  box-shadow: 0 1px 32px rgba(22, 25, 28, 0.05);
 }
 .hero-headline {
   font-family: var(--font-serif);
@@ -258,6 +270,16 @@ a:focus-visible {
   max-width: var(--content-width);
   margin: 0 auto;
   padding: 56px 32px;
+  border-radius: 16px;
+  transition: background-color 280ms ease, backdrop-filter 280ms ease, box-shadow 280ms ease;
+}
+/* Same "becomes a readable card on hover/focus" treatment as the hero —
+   applies to the whole About / Skills / Projects / Experience section. */
+.content-section:hover,
+.content-section:focus-within {
+  background-color: rgba(250, 250, 247, 0.95);
+  backdrop-filter: blur(3px);
+  box-shadow: 0 1px 32px rgba(22, 25, 28, 0.05);
 }
 @media (max-width: 640px) {
   .content-section { padding: 40px 20px; }
@@ -331,7 +353,7 @@ a:focus-visible {
   margin: 0 -20px;
   border-top: 1px solid var(--color-hairline);
   border-radius: 8px;
-  transition: background 200ms ease, transform 200ms ease;
+  transition: background-color 220ms ease, backdrop-filter 220ms ease, transform 200ms ease, box-shadow 220ms ease;
   position: relative;
 }
 .project-card:first-of-type { border-top: none; padding-top: 8px; }
@@ -349,11 +371,18 @@ a:focus-visible {
   transition: opacity 200ms ease;
 }
 .project-card:first-of-type::before { top: 8px; }
-.project-card:hover {
-  background: rgba(31, 95, 91, 0.035);
+/* Hovering (or tabbing into) a specific card lifts IT above the dot-wave
+   with its own solid backdrop — readable on its own, independent of
+   whether the rest of the Projects section is also currently hovered. */
+.project-card:hover,
+.project-card:focus-within {
+  background-color: rgba(250, 250, 247, 0.97);
+  backdrop-filter: blur(3px);
+  box-shadow: 0 1px 20px rgba(22, 25, 28, 0.06);
   transform: translateX(2px);
 }
-.project-card:hover::before {
+.project-card:hover::before,
+.project-card:focus-within::before {
   opacity: 0.5;
 }
 
