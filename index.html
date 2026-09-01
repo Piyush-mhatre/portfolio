@@ -13,6 +13,16 @@
 </head>
 <body>
 
+<!--
+  IMPORTANT: this canvas must stay OUTSIDE the <main>/.hero structure, as a
+  direct child of <body>, before <nav>. Any ancestor with a CSS `transform`
+  (like the .fade-section scroll-reveal effect) turns into a "containing
+  block" for position:fixed children, which would trap this canvas inside
+  that ancestor's box instead of the real browser viewport. Keeping it here,
+  with no transformed ancestor above it, is what makes it span edge-to-edge.
+-->
+<canvas class="hero__canvas" id="heroCanvas" aria-hidden="true"></canvas>
+
 <nav class="nav">
   <a href="#top" class="nav__mark"><span>PM</span></a>
   <div class="nav__links">
@@ -28,7 +38,6 @@
 
   <!-- HERO -->
   <section class="hero fade-section">
-    <canvas class="hero__canvas" id="heroCanvas" aria-hidden="true"></canvas>
     <p class="prompt">
       <span class="prompt__path">~/piyush</span><span class="prompt__sep"> $ </span><span class="prompt__cmd">whoami</span><span class="cursor">_</span>
     </p>

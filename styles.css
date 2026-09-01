@@ -193,7 +193,6 @@ main {
 /* ===== HERO (the very first section — name, headline, intro, social links) ===== */
 .hero {
   padding: 96px 0 56px 0;
-  position: relative;
 }
 .hero__canvas {
   /* Full-page animated dot background (drawn by script.js).
