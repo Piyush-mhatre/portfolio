@@ -219,7 +219,7 @@ a:focus-visible {
   margin: 0 auto;
   padding: 96px 32px 56px 32px;
   border-radius: 16px;
-  transition: background-color 280ms ease, backdrop-filter 280ms ease, box-shadow 280ms ease;
+  transition: background-color 500ms ease, backdrop-filter 500ms ease, box-shadow 500ms ease;
 }
 /* On hover (or keyboard focus inside it), the section becomes a solid
    "card" over the dot-wave animation so the text is easy to read instead
@@ -271,7 +271,7 @@ a:focus-visible {
   margin: 0 auto;
   padding: 56px 32px;
   border-radius: 16px;
-  transition: background-color 280ms ease, backdrop-filter 280ms ease, box-shadow 280ms ease;
+  transition: background-color 500ms ease, backdrop-filter 500ms ease, box-shadow 500ms ease;
 }
 /* Same "becomes a readable card on hover/focus" treatment as the hero —
    applies to the whole About / Skills / Projects / Experience section. */
@@ -353,7 +353,7 @@ a:focus-visible {
   margin: 0 -20px;
   border-top: 1px solid var(--color-hairline);
   border-radius: 8px;
-  transition: background-color 220ms ease, backdrop-filter 220ms ease, transform 200ms ease, box-shadow 220ms ease;
+  transition: background-color 500ms ease, backdrop-filter 500ms ease, transform 200ms ease, box-shadow 500ms ease;
   position: relative;
 }
 .project-card:first-of-type { border-top: none; padding-top: 8px; }
