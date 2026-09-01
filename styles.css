@@ -1,29 +1,54 @@
 :root {
-  --bg: #FAFAF7;
-  --ink: #16191C;
-  --muted: #5B6169;
-  --accent: #1F5F5B;
-  --hairline: #E4E2DC;
-  --tag-bg: #F1F0EC;
+  /* ===== COLOR PALETTE ===== */
+  --bg: #FAFAF7;        /* page background ("paper") */
+  --ink: #16191C;       /* primary text color */
+  --muted: #5B6169;     /* secondary/greyed-out text (dates, labels, captions) */
+  --accent: #1F5F5B;    /* the one accent color — links, cursor, hover states */
+  --hairline: #E4E2DC;  /* thin divider lines between sections */
+  --tag-bg: #F1F0EC;    /* background behind every skill/tech tag pill */
 
-  --tag-lang: #2551C9;
-  --tag-backend: #1F7A4D;
-  --tag-db: #7C3AED;
-  --tag-ai: #C2540A;
-  --tag-core: #A8324D;
-  --tag-tools: #55606B;
+  /* Skill-tag text colors — one per category, used by the .tag--* classes below */
+  --tag-lang: #2551C9;    /* Languages (Python, JS, C) */
+  --tag-backend: #1F7A4D; /* Web/Backend (Flask, HTML, REST APIs) */
+  --tag-db: #7C3AED;      /* Database (MySQL) */
+  --tag-ai: #C2540A;      /* AI/ML/Data libraries */
+  --tag-core: #A8324D;    /* Core CS (OOP, DSA, Algorithms) */
+  --tag-tools: #55606B;   /* Tools (Git, GitHub, MS Office) */
 
-  --serif: "Newsreader", Georgia, serif;
-  --sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, monospace;
+  /* ===== FONTS ===== */
+  --serif: "Newsreader", Georgia, serif;             /* headings / big titles */
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; /* body text */
+  --mono: "JetBrains Mono", ui-monospace, monospace; /* tags, terminal-style labels, dates */
 
-  --max-w: 760px;
+  --max-w: 760px; /* the width of the centered text column used everywhere */
 }
 
 * { box-sizing: border-box; }
 
 html {
   scroll-behavior: smooth;
+  /* Safety net: guarantees no horizontal scroll can ever appear, no matter
+     what a full-viewport element (like the canvas) does. */
+  overflow-x: hidden;
+  /* Custom scrollbar (Firefox): thumb color, track color */
+  scrollbar-width: thin;
+  scrollbar-color: var(--hairline) var(--bg);
+}
+
+/* Custom scrollbar (Chrome / Edge / Safari) — matches the paper/ink palette
+   instead of the browser's default grey scrollbar. */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--hairline);
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -55,7 +80,7 @@ a:focus-visible {
   border-radius: 2px;
 }
 
-/* NAV */
+/* ===== NAV BAR (the sticky top bar with "PM" and the section links) ===== */
 .nav {
   position: sticky;
   top: 0;
@@ -64,12 +89,13 @@ a:focus-visible {
   align-items: center;
   justify-content: space-between;
   padding: 18px 24px;
-  background: rgba(250, 250, 247, 0.88);
+  background: rgba(250, 250, 247, 0.88); /* semi-transparent so the animated background blurs through it */
   backdrop-filter: blur(6px);
   border-bottom: 1px solid var(--hairline);
   flex-wrap: wrap;
   gap: 10px;
 }
+/* The "PM" monogram badge, top-left of the nav (links to #top) */
 .nav__mark {
   border: none;
   display: inline-flex;
@@ -86,6 +112,7 @@ a:focus-visible {
   transition: background 150ms ease;
 }
 .nav__mark:hover span { background: var(--accent); }
+/* The row of "About / Skills / Projects / Experience / Contact" links */
 .nav__links {
   display: flex;
   gap: 22px;
@@ -96,17 +123,19 @@ a:focus-visible {
   font-size: 13px;
   color: var(--muted);
   border: none;
-  margin-left: 22px;
+  margin-left: 22px; /* fallback spacing for browsers that don't support flex `gap` */
 }
 .nav__links a:first-child { margin-left: 0; }
 .nav__links a:hover { color: var(--ink); border-bottom-color: var(--ink); }
 
+/* The centered text column that holds every section (About, Skills, Projects...) */
 main {
   max-width: var(--max-w);
   margin: 0 auto;
   padding: 0 24px;
 }
 
+/* The thin horizontal divider line between sections (fades in from grey to accent and back) */
 .rule {
   border: none;
   height: 1px;
@@ -116,7 +145,19 @@ main {
   opacity: 0.35;
 }
 
-/* Terminal-command motif — used instead of a plain section label */
+/* =====================================================================
+   TERMINAL-COMMAND LABELS
+   These are the small "$ cat about.md" / "$ ls ./skills" style lines that
+   sit at the top of every section, plus the "~/piyush $ whoami_" line in
+   the hero. Each one is built from up to 4 pieces:
+     .prompt         → the wrapping <p> element itself
+     .prompt__path   → the "~/piyush" part (hero only)
+     .prompt__sep    → the " $ " separator (colored with the accent)
+     .prompt__cmd    → the actual command text ("whoami")
+     .cursor         → the blinking "_" after the command
+     .prompt--label  → used instead, for the simpler one-line section
+                       labels like "$ cat about.md" (no separate spans)
+   ===================================================================== */
 .prompt {
   font-family: var(--mono);
   font-size: 13px;
@@ -125,9 +166,6 @@ main {
 }
 .prompt--label {
   color: var(--muted);
-}
-.prompt--label::before {
-  content: "";
 }
 .prompt__path {
   color: var(--muted);
@@ -139,6 +177,7 @@ main {
 .prompt__cmd {
   color: var(--ink);
 }
+/* The blinking "_" cursor after "whoami" in the hero */
 .cursor {
   color: var(--accent);
   animation: blink 1.1s step-end infinite;
@@ -151,16 +190,18 @@ main {
   .cursor { animation: none; opacity: 1; }
 }
 
-/* HERO */
+/* ===== HERO (the very first section — name, headline, intro, social links) ===== */
 .hero {
   padding: 96px 0 56px 0;
   position: relative;
 }
 .hero__canvas {
+  /* Full-page animated dot background (drawn by script.js).
+     Uses `inset: 0` with NO width/height in vw/vh — those units count the
+     scrollbar as part of the viewport width on desktop, which was causing
+     horizontal overflow (stray scrollbar + content pushed off-center). */
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
   pointer-events: none;
   z-index: -1;
 }
@@ -189,11 +230,12 @@ main {
   font-size: 13px;
 }
 
-/* SECTIONS */
+/* ===== GENERIC SECTION SPACING (applies to every <section>: About, Skills, Projects...) ===== */
 section {
   padding: 56px 0;
 }
 
+/* Paragraph text inside the About section */
 .about__text {
   font-size: 16px;
   max-width: 620px;
@@ -201,10 +243,12 @@ section {
   color: var(--ink);
 }
 
-/* SKILLS */
+/* ===== SKILLS ===== */
+/* One .skill-group per category (Languages, Web/Backend, Database...) */
 .skill-group {
   margin-bottom: 22px;
 }
+/* The small grey category name above each row of tags, e.g. "LANGUAGES" */
 .skill-group__label {
   display: block;
   font-family: var(--mono);
@@ -215,6 +259,13 @@ section {
   letter-spacing: 0.04em;
 }
 
+/* ===== SKILL / TECH TAGS =====
+   The small colored-rectangle pills (styled after LeetCode's topic tags).
+   Used in two places: the Skills section, and inside every project card.
+   .tags   = the flex-wrap row that holds a group of pills
+   .tag    = one pill's shared shape/padding/background
+   .tag--* = the text color for that pill's category (see the --tag-* color
+             variables at the top of this file for the actual hex values) */
 .tags {
   display: flex;
   flex-wrap: wrap;
@@ -229,6 +280,8 @@ section {
   white-space: nowrap;
   transition: transform 150ms ease, background 150ms ease;
 }
+/* Tags darken slightly when you hover the tag itself, or hover the project
+   card that contains them */
 .project:hover .tag,
 .skills .tag:hover {
   background: #ECEBE5;
@@ -240,16 +293,22 @@ section {
 .tag--core    { color: var(--tag-core); }
 .tag--tools   { color: var(--tag-tools); }
 
-/* PROJECTS */
+/* =====================================================================
+   PROJECTS
+   Each project is one <article class="project"> block. On hover, the
+   whole card gets a faint accent tint, nudges right 2px, and a thin accent
+   bar fades in on the left edge (the ::before pseudo-element below).
+   ===================================================================== */
 .project {
   padding: 28px 20px 28px 20px;
-  margin: 0 -20px;
+  margin: 0 -20px; /* pulls the hover-highlight background out to the edges of the text column */
   border-top: 1px solid var(--hairline);
   border-radius: 8px;
   transition: background 200ms ease, transform 200ms ease;
   position: relative;
 }
 .project:first-of-type { border-top: none; padding-top: 8px; }
+/* The thin accent-colored bar on the left edge, hidden until hover */
 .project::before {
   content: "";
   position: absolute;
@@ -272,6 +331,7 @@ section {
 }
 
 .project__year {
+  /* "YEAR 4 · PUBLISHED — IEEE CONIT 2025" style line above each title */
   font-family: var(--mono);
   font-size: 11.5px;
   color: var(--muted);
@@ -291,6 +351,8 @@ section {
   margin: 0 0 16px 0;
 }
 .project__links {
+  /* Row holding "View on GitHub ↗" and (for the flagship project) the
+     "Live demo coming soon" note */
   margin-top: 16px;
   display: flex;
   align-items: center;
@@ -308,7 +370,11 @@ section {
   font-style: italic;
 }
 
-/* EXPERIENCE */
+/* =====================================================================
+   EXPERIENCE (Standard Chartered Bank entry)
+   .exp-row = the top line: company name + role on the left,
+              dates on the right, laid out with space-between
+   ===================================================================== */
 .exp-row {
   display: flex;
   justify-content: space-between;
@@ -340,7 +406,7 @@ section {
   max-width: 620px;
 }
 
-/* CONTACT / FOOTER */
+/* ===== CONTACT / FOOTER (the very last section) ===== */
 .contact {
   padding: 56px 0 96px 0;
 }
@@ -366,7 +432,12 @@ section {
   color: var(--muted);
 }
 
-/* MOTION — subtle fade-up on scroll, respects reduced motion */
+/* =====================================================================
+   SCROLL-REVEAL ANIMATION
+   Every section has class="... fade-section" in the HTML. script.js uses
+   an IntersectionObserver to add "is-visible" the first time each one
+   scrolls into view, which triggers this fade+rise transition.
+   ===================================================================== */
 .fade-section {
   opacity: 0;
   transform: translateY(10px);
@@ -384,7 +455,7 @@ section {
   }
 }
 
-/* RESPONSIVE */
+/* ===== RESPONSIVE OVERRIDES (small phone screens) ===== */
 @media (max-width: 640px) {
   .nav { padding: 14px 18px; }
   main { padding: 0 18px; }
