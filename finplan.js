@@ -6,7 +6,7 @@
 // this public JS file. The actual API keys (for future features) live
 // only in Render's environment variables and are never referenced here.
 // =====================================================================
-const API_BASE_URL = "https://piyush-api-demo.onrender.com/"; // ← replace after deploying to Render
+const API_BASE_URL = "https://piyush-api-demo.onrender.com"; // ← replace after deploying to Render
 
 const form = document.getElementById("finplan-form");
 const statusEl = document.getElementById("finplan-status");
