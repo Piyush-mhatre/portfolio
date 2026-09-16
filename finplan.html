@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Financial Planner — Piyush Mhatre</title>
+<meta name="description" content="Live demo: 30-year investment projection tool, part of the Explainable AI Financial Advisor project." />
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Reuses the portfolio's own design tokens and base styles -->
+<link rel="stylesheet" href="styles.css" />
+<!-- Extra rules for the calculator form + results, layered on top -->
+<link rel="stylesheet" href="finplan.css" />
+<!-- Chart.js, for the investment-growth line chart -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html#top" class="site-logo"><span>PM</span></a>
+  <nav class="site-nav">
+    <a href="index.html#projects">← Back to portfolio</a>
+  </nav>
+</header>
+
+<main class="page finplan-page">
+
+  <section class="hero-section" style="padding-top: 56px;">
+    <p class="terminal-line terminal-label">$ python finplan.py --live-demo</p>
+    <h1 class="hero-headline" style="font-size: clamp(28px, 4.5vw, 40px);">Financial Planner</h1>
+    <p class="hero-intro">
+      A 30-year investment growth projection, split across 12 Indian investment
+      categories (mutual funds, PPF, NPS, gold, equities, and more). Part of the
+      <strong>Explainable AI Financial Advisor</strong> project — this is the live
+      backend, not a mockup. Enter your numbers below; the calculation runs on a
+      real FastAPI service.
+    </p>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="content-section finplan-form-section">
+    <p class="terminal-line terminal-label">$ ./generate-plan</p>
+
+    <form id="finplan-form" class="finplan-form">
+      <div class="finplan-field">
+        <label for="income">Annual income (₹)</label>
+        <input type="number" id="income" name="income" placeholder="e.g. 1200000" min="1" required />
+      </div>
+      <div class="finplan-field">
+        <label for="age">Current age</label>
+        <input type="number" id="age" name="age" placeholder="e.g. 25" min="18" max="90" required />
+      </div>
+      <div class="finplan-field">
+        <label for="salaryGrowth">Expected annual salary growth (%)</label>
+        <input type="number" id="salaryGrowth" name="salaryGrowth" placeholder="e.g. 8" min="0" max="50" step="0.1" required />
+      </div>
+      <div class="finplan-field">
+        <label for="investmentPercentage">% of income invested each year</label>
+        <input type="number" id="investmentPercentage" name="investmentPercentage" placeholder="e.g. 20" min="1" max="100" step="0.1" required />
+      </div>
+      <div class="finplan-field finplan-field-risk">
+        <label>Risk profile</label>
+        <div class="finplan-risk-options">
+          <label class="finplan-radio"><input type="radio" name="riskProfile" value="low" /> Low</label>
+          <label class="finplan-radio"><input type="radio" name="riskProfile" value="mid" checked /> Mid</label>
+          <label class="finplan-radio"><input type="radio" name="riskProfile" value="high" /> High</label>
+        </div>
+      </div>
+
+      <button type="submit" class="finplan-submit">Generate plan ↗</button>
+    </form>
+
+    <p id="finplan-status" class="finplan-status" aria-live="polite"></p>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="content-section finplan-results-section" id="finplan-results" style="display: none;">
+    <p class="terminal-line terminal-label">$ cat projection.json</p>
+
+    <div class="finplan-summary" id="finplan-summary"></div>
+
+    <div class="finplan-chart-wrap">
+      <canvas id="finplan-chart" height="110"></canvas>
+    </div>
+
+    <div class="finplan-risk-table-wrap">
+      <table class="finplan-risk-table" id="finplan-risk-table">
+        <thead>
+          <tr><th>Investment Type</th><th>Risk Level</th><th>Annual Growth Rate</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="page">
+    <p class="footer-meta">
+      Part of the <a href="index.html#projects">Explainable AI Financial Advisor</a> project · Backend hosted on Render, frontend on Vercel
+    </p>
+  </div>
+</footer>
+
+<script src="finplan.js"></script>
+</body>
+</html>

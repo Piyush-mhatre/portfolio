@@ -1,0 +1,171 @@
+/* =====================================================================
+   FINPLAN DEMO PAGE — extra styles on top of the portfolio's styles.css.
+   Everything here reuses the same design tokens (--color-*, --font-*)
+   defined in styles.css, so it stays visually consistent with the rest
+   of the site without duplicating the palette.
+   ===================================================================== */
+
+.finplan-page .site-nav a {
+  /* the "← Back to portfolio" link — slightly more prominent than a
+     normal nav link since it's the only one on this page */
+  color: var(--color-ink);
+}
+
+/* ===== FORM ===== */
+.finplan-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 24px;
+  max-width: var(--prose-width);
+  margin-top: 8px;
+}
+.finplan-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.finplan-field-risk {
+  grid-column: 1 / -1;
+}
+.finplan-field label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.finplan-field input[type="number"] {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--color-ink);
+  background: var(--color-tag-background);
+  border: 1px solid var(--color-hairline);
+  border-radius: 8px;
+  padding: 10px 12px;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+.finplan-field input[type="number"]:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  background: var(--color-paper);
+}
+.finplan-risk-options {
+  display: flex;
+  gap: 16px;
+}
+.finplan-radio {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+.finplan-submit {
+  grid-column: 1 / -1;
+  justify-self: start;
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-paper);
+  background: var(--color-ink);
+  border: none;
+  border-radius: 8px;
+  padding: 11px 20px;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+.finplan-submit:hover {
+  background: var(--color-accent);
+}
+.finplan-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.finplan-status {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-muted);
+  margin-top: 16px;
+  min-height: 1.2em;
+}
+.finplan-status.is-error {
+  color: #A8324D;
+}
+
+@media (max-width: 640px) {
+  .finplan-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== RESULTS ===== */
+.finplan-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.finplan-summary-card {
+  background: var(--color-tag-background);
+  border-radius: 10px;
+  padding: 16px 20px;
+  min-width: 180px;
+}
+.finplan-summary-card-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 6px;
+}
+.finplan-summary-card-value {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  color: var(--color-ink);
+}
+
+.finplan-chart-wrap {
+  max-width: var(--content-width);
+  margin-bottom: 40px;
+  background: var(--color-tag-background);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.finplan-risk-table-wrap {
+  overflow-x: auto;
+}
+.finplan-risk-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.finplan-risk-table th {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-muted);
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-hairline);
+}
+.finplan-risk-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-hairline);
+  color: var(--color-ink);
+}
+.finplan-risk-badge {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: var(--color-tag-background);
+}
+.finplan-risk-badge-low  { color: var(--color-tag-backend); }
+.finplan-risk-badge-mid  { color: var(--color-tag-ai); }
+.finplan-risk-badge-high { color: var(--color-tag-core); }
