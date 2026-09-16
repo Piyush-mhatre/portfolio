@@ -13,8 +13,10 @@
 <link rel="stylesheet" href="styles.css" />
 <!-- Extra rules for the calculator form + results, layered on top -->
 <link rel="stylesheet" href="finplan.css" />
-<!-- Chart.js, for the investment-growth line chart -->
+<!-- Chart.js + zoom/pan plugin (needs Hammer.js loaded first, for pinch/touch) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.7/hammer.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.2.0/chartjs-plugin-zoom.min.js"></script>
 </head>
 <body>
 
@@ -83,8 +85,17 @@
 
     <div class="finplan-summary" id="finplan-summary"></div>
 
+    <div class="finplan-chart-controls">
+      <div class="finplan-chart-legend-hint">Hover the chart to compare every investment at a given age · drag or scroll to zoom</div>
+      <div class="finplan-chart-buttons">
+        <button type="button" id="finplan-zoom-enable" class="finplan-chip finplan-chip-active">Zoom: On</button>
+        <button type="button" id="finplan-zoom-disable" class="finplan-chip">Zoom: Off</button>
+        <button type="button" id="finplan-reset-view" class="finplan-chip">Reset view</button>
+      </div>
+    </div>
+
     <div class="finplan-chart-wrap">
-      <canvas id="finplan-chart" height="110"></canvas>
+      <canvas id="finplan-chart"></canvas>
     </div>
 
     <div class="finplan-risk-table-wrap">
