@@ -1,0 +1,71 @@
+/* =====================================================================
+   PROJECT HUB PAGE — the feature-card grid.
+   Reuses design tokens from styles.css (--color-*, --font-*) and the
+   .skill-tag / .tag-row components already defined there.
+   ===================================================================== */
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 8px;
+}
+@media (max-width: 720px) {
+  .feature-grid { grid-template-columns: 1fr; }
+}
+
+.feature-card {
+  display: block;
+  padding: 22px;
+  border: 1px solid var(--color-hairline);
+  border-radius: 12px;
+  background: var(--color-paper);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+
+/* Live features are real links — give them a hover affordance */
+.feature-card-live {
+  cursor: pointer;
+}
+.feature-card-live:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(22, 25, 28, 0.06);
+}
+
+/* Not-yet-built features are informational only, not clickable —
+   slightly muted so it's visually obvious which cards do something */
+.feature-card-pending {
+  opacity: 0.62;
+  cursor: default;
+}
+
+.feature-card-status {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  margin-bottom: 10px;
+}
+.feature-card-status-live {
+  color: var(--color-tag-backend);
+}
+.feature-card-status-pending {
+  color: var(--color-muted);
+}
+
+.feature-card-title {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--color-ink);
+  margin: 0 0 10px 0;
+}
+.feature-card-desc {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-muted);
+  margin: 0 0 16px 0;
+}

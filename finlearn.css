@@ -1,0 +1,222 @@
+/* =====================================================================
+   FINLEARN PAGE — sidebar navigation + long-form reading content.
+   Reuses the portfolio's design tokens from styles.css (--color-*,
+   --font-*); everything here is this page's own layout on top of them.
+   ===================================================================== */
+
+body {
+  background: var(--color-paper);
+}
+
+.container {
+  display: flex;
+  align-items: flex-start;
+  max-width: 1280px;
+  margin: 0 auto;
+  min-height: calc(100vh - 64px);
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 64px; /* sits just below the site header */
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+  border-right: 1px solid var(--color-hairline);
+  padding: 28px 0;
+}
+.sidebar-header {
+  padding: 0 24px 20px 24px;
+}
+.sidebar-header h2 {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+  margin: 0;
+}
+
+.nav-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav-item {
+  border-bottom: none;
+}
+.nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 24px;
+  font-family: var(--font-sans);
+  font-size: 14.5px;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+}
+.nav-link:hover {
+  background: var(--color-tag-background);
+  color: var(--color-accent);
+}
+.nav-item.active > .nav-link {
+  color: var(--color-accent);
+  background: var(--color-tag-background);
+  font-weight: 500;
+  border-left: 2px solid var(--color-accent);
+  padding-left: 22px;
+}
+.nav-link .fa-chevron-down {
+  font-size: 11px;
+  color: var(--color-muted);
+  transition: transform 200ms ease;
+}
+.nav-item.open > .nav-link .fa-chevron-down {
+  transform: rotate(180deg);
+}
+
+.submenu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 250ms ease;
+}
+.nav-item.open .submenu {
+  max-height: 300px;
+}
+.submenu-item {
+  padding: 8px 24px 8px 40px;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+}
+.submenu-item:hover {
+  background: var(--color-tag-background);
+  color: var(--color-accent);
+}
+.submenu-item.active {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 48px 56px 96px 56px;
+}
+
+.content-section {
+  display: none;
+  max-width: 720px;
+  animation: content-fade-in 300ms ease;
+}
+.content-section.active {
+  display: block;
+}
+@keyframes content-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.content-section h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 4vw, 38px);
+  font-weight: 500;
+  color: var(--color-ink);
+  margin: 0 0 28px 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-hairline);
+}
+.content-section h2 {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--color-ink);
+  margin: 36px 0 12px 0;
+}
+.content-section h3 {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 24px 0 10px 0;
+}
+.content-section h4 {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+  margin: 0 0 8px 0;
+}
+.content-section p {
+  font-family: var(--font-sans);
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: var(--color-ink);
+  margin: 0 0 16px 0;
+}
+.content-section ul,
+.content-section ol {
+  margin: 0 0 16px 0;
+  padding-left: 22px;
+}
+.content-section li {
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: var(--color-ink);
+  margin-bottom: 8px;
+}
+.content-section strong {
+  font-weight: 600;
+}
+.content-section a {
+  color: var(--color-accent);
+}
+
+.content-sources {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-hairline);
+}
+.content-sources ul {
+  padding-left: 0;
+  list-style: none;
+}
+.content-sources li {
+  font-size: 13.5px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 860px) {
+  .container {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    position: static;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--color-hairline);
+    max-height: 320px;
+  }
+  .main-content {
+    padding: 32px 24px 64px 24px;
+  }
+}
+
+/* Mobile sidebar toggle button — injected by finlearn.js, styled here to
+   match the portfolio's chip/button aesthetic instead of its own default */
+.sidebar-toggle {
+  background: var(--color-ink) !important;
+  font-family: var(--font-sans);
+}

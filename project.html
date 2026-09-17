@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Explainable AI Financial Advisor — Piyush Mhatre</title>
+<meta name="description" content="Project hub for the Explainable AI Financial Advisor — a financial planner, learning center, stock analyzer, chatbot, gold tracker, news sentiment tool, and investment recommender." />
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="project.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html#top" class="site-logo"><span>PM</span></a>
+  <nav class="site-nav">
+    <a href="index.html#projects">← Back to portfolio</a>
+  </nav>
+</header>
+
+<main class="page project-hub">
+
+  <section class="hero-section" style="padding-top: 56px;">
+    <p class="terminal-line terminal-label">$ ls ./explainable-ai-financial-advisor</p>
+    <h1 class="hero-headline" style="font-size: clamp(28px, 4.5vw, 40px);">Explainable AI Financial Advisor</h1>
+    <p class="hero-intro">
+      A multi-feature financial platform, originally built with Flask and now being rebuilt
+      feature-by-feature on FastAPI + a matching frontend for each piece. Research paper
+      accepted at IEEE CONIT 2025. Pick a feature below — live ones are fully working demos,
+      not mockups.
+    </p>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="content-section project-hub-grid-section">
+    <p class="terminal-line terminal-label">$ ls -la ./features</p>
+
+    <div class="feature-grid">
+
+      <a href="finplan.html" class="feature-card feature-card-live">
+        <div class="feature-card-status feature-card-status-live">● Live</div>
+        <h3 class="feature-card-title">Financial Planner</h3>
+        <p class="feature-card-desc">30-year investment growth projection across 12 Indian investment categories — mutual funds, PPF, NPS, gold, equities, and more — with pan/zoom charts and per-category breakdowns.</p>
+        <div class="tag-row">
+          <span class="skill-tag skill-tag-backend">FastAPI</span>
+          <span class="skill-tag skill-tag-ai">Chart.js</span>
+        </div>
+      </a>
+
+      <a href="finlearn.html" class="feature-card feature-card-live">
+        <div class="feature-card-status feature-card-status-live">● Live</div>
+        <h3 class="feature-card-title">Financial Learning</h3>
+        <p class="feature-card-desc">A reference library covering equities, mutual funds, bonds, real estate, gold, SIPs, fixed deposits, PPF, NPS, and emergency funds — explained in plain language.</p>
+        <div class="tag-row">
+          <span class="skill-tag skill-tag-tools">Static content</span>
+        </div>
+      </a>
+
+      <div class="feature-card feature-card-pending">
+        <div class="feature-card-status feature-card-status-pending">○ Coming soon</div>
+        <h3 class="feature-card-title">Stock Analysis</h3>
+        <p class="feature-card-desc">Piotroski F-Score, price forecasting, candlestick charts, and sector performance for any ticker.</p>
+        <div class="tag-row">
+          <span class="skill-tag skill-tag-ai">YFinance</span>
+          <span class="skill-tag skill-tag-ai">Prophet</span>
+        </div>
+      </div>
+
+      <div class="feature-card feature-card-pending">
+        <div class="feature-card-status feature-card-status-pending">○ Coming soon</div>
+        <h3 class="feature-card-title">AI Advisor Chatbot</h3>
+        <p class="feature-card-desc">Conversational financial guidance with saved conversation history, powered by Gemini.</p>
+        <div class="tag-row">
+          <span class="skill-tag skill-tag-ai">Gemini AI</span>
+        </div>
+      </div>
+
+      <div class="feature-card feature-card-pending">
+        <div class="feature-card-status feature-card-status-pending">○ Coming soon</div>
+        <h3 class="feature-card-title">Gold Price Tracker</h3>
+        <p class="feature-card-desc">Real-time gold prices by karat, in USD and INR, with a 30-day trend chart and AI-generated market analysis.</p>
+        <div class="tag-row">
+          <span class="skill-tag skill-tag-ai">Gemini AI</span>
+        </div>
+      </div>
+
+      <div class="feature-card feature-card-pending">
+        <div class="feature-card-status feature-card-status-pending">○ Coming soon</div>
+        <h3 class="feature-card-title">News Sentiment</h3>
+        <p class="feature-card-desc">Search financial news by topic and filter by sentiment — positive, neutral, or negative — using a BERT model.</p>
+        <div class="tag-row">
+          <span class="skill-tag skill-tag-ai">BERT</span>
+        </div>
+      </div>
+
+      <div class="feature-card feature-card-pending">
+        <div class="feature-card-status feature-card-status-pending">○ Coming soon</div>
+        <h3 class="feature-card-title">Investment Recommender</h3>
+        <p class="feature-card-desc">A Decision Tree-based recommender that suggests investment types based on risk tolerance, tax preference, liquidity needs, and duration.</p>
+        <div class="tag-row">
+          <span class="skill-tag skill-tag-ai">Scikit-learn</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="page">
+    <p class="footer-meta">
+      Built by <a href="index.html#top">Piyush Mhatre</a> · Backend on Render, frontend on Vercel
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
