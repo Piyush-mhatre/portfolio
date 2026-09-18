@@ -1,0 +1,262 @@
+/* =====================================================================
+   STOCK ANALYSIS DEMO PAGE — extra styles on top of the portfolio's
+   styles.css. Reuses the same design tokens (--color-*, --font-*).
+   ===================================================================== */
+
+/* ===== FORM ===== */
+.stock-form {
+  display: flex;
+  gap: 10px;
+  max-width: var(--prose-width);
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.stock-form input[type="text"] {
+  flex: 1;
+  min-width: 220px;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--color-ink);
+  background: var(--color-tag-background);
+  border: 1px solid var(--color-hairline);
+  border-radius: 8px;
+  padding: 11px 14px;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+.stock-form input[type="text"]:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  background: var(--color-paper);
+}
+.stock-submit {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-paper);
+  background: var(--color-ink);
+  border: none;
+  border-radius: 8px;
+  padding: 11px 20px;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+.stock-submit:hover { background: var(--color-accent); }
+.stock-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.stock-status {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-muted);
+  margin-top: 14px;
+  min-height: 1.2em;
+}
+.stock-status.is-error { color: #A8324D; }
+
+/* ===== SHARED BLOCK LAYOUT ===== */
+.stock-block {
+  margin-bottom: 8px;
+}
+.divider-light {
+  border: none;
+  height: 1px;
+  background: var(--color-hairline);
+  margin: 36px 0;
+  opacity: 0.6;
+}
+
+.stock-chart-wrap {
+  max-width: var(--content-width);
+  background: var(--color-tag-background);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 0;
+}
+.stock-chart-wrap > div {
+  width: 100%;
+  height: 420px;
+}
+
+/* ===== PIOTROSKI ===== */
+.piotroski-summary {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.piotroski-score-badge {
+  font-family: var(--font-serif);
+  font-size: 30px;
+  font-weight: 500;
+  color: var(--color-ink);
+  background: var(--color-tag-background);
+  border-radius: 12px;
+  padding: 10px 22px;
+  white-space: nowrap;
+}
+.piotroski-score-badge span {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--color-muted);
+}
+.piotroski-interpretation {
+  font-size: 15px;
+  color: var(--color-ink);
+  max-width: 480px;
+}
+
+.piotroski-details {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.piotroski-details li {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--color-hairline);
+}
+.piotroski-details li:first-child { border-top: none; }
+.piotroski-mark {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  flex-shrink: 0;
+  width: 20px;
+}
+.piotroski-mark.pass { color: var(--color-tag-backend); }
+.piotroski-mark.fail { color: var(--color-muted); }
+.piotroski-criterion {
+  font-weight: 600;
+  font-size: 14.5px;
+  color: var(--color-ink);
+  margin-bottom: 2px;
+}
+.piotroski-explanation {
+  font-size: 14px;
+  color: var(--color-muted);
+  line-height: 1.55;
+}
+
+/* ===== FORECAST ===== */
+.forecast-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.forecast-card {
+  background: var(--color-tag-background);
+  border-radius: 10px;
+  padding: 14px 18px;
+  min-width: 160px;
+}
+.forecast-card-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 6px;
+}
+.forecast-card-value {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  color: var(--color-ink);
+}
+.forecast-card-value.positive { color: var(--color-tag-backend); }
+.forecast-card-value.negative { color: var(--color-tag-core); }
+.forecast-engine-note {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--color-muted);
+  margin: 10px 0 4px 0;
+  font-style: italic;
+}
+.forecast-explanation {
+  font-size: 14.5px;
+  color: var(--color-ink);
+  max-width: var(--prose-width);
+  line-height: 1.65;
+  margin: 12px 0 0 0;
+}
+.forecast-explanation p { margin: 0 0 8px 0; }
+.forecast-seasonality {
+  margin: 8px 0 0 0;
+  padding-left: 20px;
+}
+.forecast-seasonality li {
+  font-size: 13.5px;
+  color: var(--color-muted);
+  margin-bottom: 4px;
+}
+
+/* ===== COMPANY INFO ===== */
+.company-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-bottom: 8px;
+}
+.company-info-item {
+  background: var(--color-tag-background);
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+.company-info-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 4px;
+}
+.company-info-value {
+  font-size: 14.5px;
+  color: var(--color-ink);
+  line-height: 1.5;
+}
+.company-info-value.full-width {
+  grid-column: 1 / -1;
+}
+.company-summary-block {
+  grid-column: 1 / -1;
+  background: var(--color-tag-background);
+  border-radius: 10px;
+  padding: 14px 18px;
+}
+
+.chart-analysis {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--color-ink);
+  line-height: 1.65;
+}
+.chart-analysis p { margin: 0 0 8px 0; }
+.chart-analysis ul {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+.chart-analysis li {
+  color: var(--color-muted);
+  font-size: 13.5px;
+  margin-bottom: 4px;
+}
+
+/* ===== SECTOR ===== */
+.sector-info {
+  font-size: 15px;
+  color: var(--color-ink);
+  max-width: var(--prose-width);
+  line-height: 1.65;
+}
+.sector-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+@media (max-width: 640px) {
+  .stock-form { flex-direction: column; }
+  .stock-chart-wrap > div { height: 320px; }
+}

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stock Analysis — Piyush Mhatre</title>
+<meta name="description" content="Live demo: Piotroski F-Score, price forecast, candlestick chart, and sector performance for any stock ticker." />
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="stock_analysis.css" />
+<script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+<script src="warmup.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html#top" class="site-logo"><span>PM</span></a>
+  <nav class="site-nav">
+    <a href="project.html">← Back to project hub</a>
+  </nav>
+</header>
+
+<main class="page stock-page">
+
+  <section class="hero-section" style="padding-top: 56px;">
+    <p class="terminal-line">
+      <span class="terminal-user">~/piyush</span><span class="terminal-separator"> $ </span><span class="terminal-command">python stock_analysis.py --live-demo</span><span class="terminal-cursor">_</span>
+    </p>
+    <h1 class="hero-headline" style="font-size: clamp(28px, 4.5vw, 40px);">Stock Analysis</h1>
+    <p class="hero-intro">
+      Piotroski F-Score, a price forecast, a full candlestick chart, and sector
+      performance — for any public ticker, computed live by a real FastAPI backend.
+      Part of the <strong>Explainable AI Financial Advisor</strong> project.
+    </p>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="content-section stock-form-section">
+    <p class="terminal-line terminal-label">$ ./analyze --ticker</p>
+    <form id="stock-form" class="stock-form">
+      <input type="text" id="ticker" name="ticker" placeholder="e.g. AAPL, MSFT, TSLA, GOOGL" autocomplete="off" required />
+      <button type="submit" class="stock-submit">Analyze ↗</button>
+    </form>
+    <p id="stock-status" class="stock-status" aria-live="polite"></p>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="content-section stock-results-section" id="stock-results" style="display:none;">
+
+    <!-- PIOTROSKI -->
+    <div class="stock-block">
+      <p class="terminal-line terminal-label">$ cat piotroski_score.json</p>
+      <div id="piotroski-summary" class="piotroski-summary"></div>
+      <ul id="piotroski-details" class="piotroski-details"></ul>
+    </div>
+
+    <hr class="divider-light" />
+
+    <!-- FORECAST -->
+    <div class="stock-block">
+      <p class="terminal-line terminal-label">$ cat forecast.json</p>
+      <div id="forecast-summary" class="forecast-summary"></div>
+      <div class="stock-chart-wrap"><div id="forecast-chart"></div></div>
+    </div>
+
+    <hr class="divider-light" />
+
+    <!-- CANDLESTICK + COMPANY INFO -->
+    <div class="stock-block">
+      <p class="terminal-line terminal-label">$ cat company_info.json</p>
+      <div id="company-info" class="company-info"></div>
+      <div class="stock-chart-wrap"><div id="candlestick-chart"></div></div>
+      <div id="chart-analysis" class="chart-analysis"></div>
+    </div>
+
+    <hr class="divider-light" />
+
+    <!-- SECTOR -->
+    <div class="stock-block">
+      <p class="terminal-line terminal-label">$ cat sector_performance.json</p>
+      <div id="sector-info" class="sector-info"></div>
+    </div>
+
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="page">
+    <p class="footer-meta">
+      Part of the <a href="project.html">Explainable AI Financial Advisor</a> project · Backend hosted on Render, frontend on Vercel
+    </p>
+  </div>
+</footer>
+
+<script src="stock_analysis.js"></script>
+
+<!-- Vercel Web Analytics -->
+<script>
+  window.va = window.va || function () {
+    (window.vaq = window.vaq || []).push(arguments);
+  };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
