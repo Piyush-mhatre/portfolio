@@ -1,0 +1,219 @@
+/* =====================================================================
+   NEWS SENTIMENT DEMO PAGE — extra styles on top of the portfolio's
+   styles.css. Reuses the same design tokens (--color-*, --font-*), fully
+   self-contained (doesn't depend on any other page's stylesheet).
+   ===================================================================== */
+
+/* ===== MODEL STATUS INDICATOR (in the hero) ===== */
+.model-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--color-muted);
+  margin-top: 20px;
+}
+.model-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-muted);
+  flex-shrink: 0;
+  transition: background 200ms ease;
+}
+.model-status.is-ready .model-status-dot { background: var(--color-tag-backend); }
+.model-status.is-loading .model-status-dot {
+  background: var(--color-tag-ai);
+  animation: status-pulse 1.4s ease-in-out infinite;
+}
+.model-status.is-error .model-status-dot { background: var(--color-tag-core); }
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .model-status.is-loading .model-status-dot { animation: none; }
+}
+
+/* ===== SEARCH FORM ===== */
+.news-form {
+  display: flex;
+  gap: 10px;
+  max-width: var(--prose-width);
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.news-form input[type="text"] {
+  flex: 1;
+  min-width: 220px;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--color-ink);
+  background: var(--color-tag-background);
+  border: 1px solid var(--color-hairline);
+  border-radius: 8px;
+  padding: 11px 14px;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+.news-form input[type="text"]:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  background: var(--color-paper);
+}
+.news-submit {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-paper);
+  background: var(--color-ink);
+  border: none;
+  border-radius: 8px;
+  padding: 11px 20px;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+.news-submit:hover { background: var(--color-accent); }
+.news-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.news-status {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-muted);
+  margin-top: 14px;
+  min-height: 1.2em;
+}
+.news-status.is-error { color: #A8324D; }
+
+/* ===== CHIP BUTTONS (topic pills + sentiment filter pills) ===== */
+.chip {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-muted);
+  background: var(--color-tag-background);
+  border: 1px solid var(--color-hairline);
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+.chip:hover {
+  border-color: var(--color-accent);
+  color: var(--color-ink);
+}
+.chip-active {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  border-color: var(--color-ink);
+}
+.chip-active:hover { color: var(--color-paper); }
+
+.news-topic-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.news-topic-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-muted);
+  margin-right: 2px;
+}
+
+/* ===== RESULTS HEADER + FILTERS ===== */
+.news-results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.news-results-header .terminal-line { margin-bottom: 0; }
+.news-filter-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ===== NEWS GRID + CARDS ===== */
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+.news-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-hairline);
+  border-radius: 12px;
+  background: var(--color-paper);
+  overflow: hidden;
+  transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+.news-card:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(22, 25, 28, 0.06);
+}
+.news-card-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  background: var(--color-tag-background);
+  display: block;
+}
+.news-card-body {
+  padding: 16px 18px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.news-sentiment-badge {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: var(--color-tag-background);
+  margin-bottom: 10px;
+}
+.news-sentiment-badge.positive { color: var(--color-tag-backend); }
+.news-sentiment-badge.negative { color: var(--color-tag-core); }
+.news-sentiment-badge.neutral  { color: var(--color-muted); }
+
+.news-card-title {
+  font-family: var(--font-serif);
+  font-size: 16.5px;
+  font-weight: 500;
+  color: var(--color-ink);
+  line-height: 1.35;
+  margin: 0 0 8px 0;
+}
+.news-card-desc {
+  font-size: 13.5px;
+  color: var(--color-muted);
+  line-height: 1.55;
+  margin: 0 0 14px 0;
+  flex: 1;
+}
+.news-card-link {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  align-self: flex-start;
+}
+
+.news-empty {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-muted);
+  padding: 24px 0;
+}
+
+@media (max-width: 640px) {
+  .news-form { flex-direction: column; }
+  .news-grid { grid-template-columns: 1fr; }
+}
