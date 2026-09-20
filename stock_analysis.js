@@ -148,6 +148,7 @@ function renderCandlestickAndInfo(result) {
   }
 
   const info = result.company_info;
+  const hasWebsite = info.Website && info.Website !== "N/A";
   infoEl.innerHTML = `
     <div class="company-info-item">
       <div class="company-info-label">Current price</div>
@@ -160,6 +161,14 @@ function renderCandlestickAndInfo(result) {
     <div class="company-info-item">
       <div class="company-info-label">Country</div>
       <div class="company-info-value">${info.Country}</div>
+    </div>
+    <div class="company-info-item">
+      <div class="company-info-label">Website</div>
+      <div class="company-info-value">${
+        hasWebsite
+          ? `<a href="${info.Website}" target="_blank" rel="noopener noreferrer">${info.Website.replace(/^https?:\/\//, "")}</a>`
+          : "N/A"
+      }</div>
     </div>
     <div class="company-info-item">
       <div class="company-info-label">Analyst recommendation</div>
