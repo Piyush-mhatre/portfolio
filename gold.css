@@ -1,0 +1,180 @@
+/* =====================================================================
+   GOLD PRICE TRACKER PAGE — extra styles on top of the portfolio's
+   styles.css. Reuses the same design tokens (--color-*, --font-*) and
+   the same chip-button pattern as finplan.css, so the chart controls
+   read as the same UI element across both pages.
+   ===================================================================== */
+
+.gold-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  max-width: var(--content-width);
+  margin-top: 8px;
+}
+.gold-status {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-muted);
+  min-height: 1.2em;
+  margin: 0;
+}
+.gold-status.is-error { color: #A8324D; }
+
+.gold-chip {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-muted);
+  background: var(--color-tag-background);
+  border: 1px solid var(--color-hairline);
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+  white-space: nowrap;
+}
+.gold-chip:hover {
+  border-color: var(--color-accent);
+  color: var(--color-ink);
+}
+.gold-chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.gold-chip-active {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  border-color: var(--color-ink);
+}
+.gold-chip-active:hover {
+  color: var(--color-paper);
+}
+
+/* ===== SHARED BLOCK LAYOUT ===== */
+.gold-block {
+  margin-bottom: 8px;
+}
+.divider-light {
+  border: none;
+  height: 1px;
+  background: var(--color-hairline);
+  margin: 36px 0;
+  opacity: 0.6;
+}
+
+/* ===== BADGES (recommendation / estimated-rate flag) ===== */
+.gold-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+/* ===== PRICE SUMMARY CARDS ===== */
+.gold-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  max-width: var(--content-width);
+}
+.gold-summary-card {
+  background: var(--color-tag-background);
+  border-radius: 10px;
+  padding: 14px 18px;
+}
+.gold-summary-card-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 6px;
+}
+.gold-summary-card-value {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  color: var(--color-ink);
+}
+
+/* ===== KARAT TABLE ===== */
+.gold-table-wrap {
+  overflow-x: auto;
+}
+.gold-table {
+  width: 100%;
+  max-width: var(--content-width);
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.gold-table th {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-muted);
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-hairline);
+}
+.gold-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-hairline);
+  color: var(--color-ink);
+}
+.gold-table td.gold-karat-cell {
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+/* ===== CHART ===== */
+.gold-chart-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-width: var(--content-width);
+  margin-bottom: 14px;
+}
+.gold-chart-legend-hint {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-muted);
+}
+.gold-chart-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.gold-chart-wrap {
+  max-width: var(--content-width);
+  margin-bottom: 8px;
+  background: var(--color-tag-background);
+  border-radius: 12px;
+  padding: 20px;
+  height: 420px;
+}
+.gold-chart-wrap canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ===== AI INSIGHTS ===== */
+.gold-insights {
+  font-size: 15px;
+  color: var(--color-ink);
+  max-width: var(--prose-width);
+  line-height: 1.7;
+  background: var(--color-tag-background);
+  border-radius: 10px;
+  padding: 18px 22px;
+}
+.gold-insights p { margin: 0; }
+.gold-insights p + p { margin-top: 10px; }
+
+@media (max-width: 640px) {
+  .gold-status-row { flex-direction: column; align-items: flex-start; }
+  .gold-chart-wrap { height: 320px; }
+}

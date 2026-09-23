@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gold Price Tracker — Piyush Mhatre</title>
+<meta name="description" content="Live demo: real-time gold prices by karat in USD and INR, a 30-day trend chart, and AI-generated market commentary. Part of the Explainable AI Financial Advisor project." />
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="gold.css" />
+<script src="warmup.js"></script>
+<!-- Chart.js + zoom/pan plugin (needs Hammer.js loaded first, for pinch/touch) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.7/hammer.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.2.0/chartjs-plugin-zoom.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html#top" class="site-logo"><span>PM</span></a>
+  <nav class="site-nav">
+    <a href="project.html">← Back to project hub</a>
+  </nav>
+</header>
+
+<main class="page gold-page">
+
+  <section class="hero-section" style="padding-top: 56px;">
+    <p class="terminal-line terminal-label">$ python gold_tracker.py --live-demo</p>
+    <h1 class="hero-headline" style="font-size: clamp(28px, 4.5vw, 40px);">Gold Price Tracker</h1>
+    <p class="hero-intro">
+      Live gold prices by karat, in USD and INR, with a 30-day trend chart and
+      AI-generated market commentary. Part of the <strong>Explainable AI Financial
+      Advisor</strong> project — this is the live backend, computed from real market
+      data, not a mockup.
+    </p>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="content-section gold-status-section">
+    <p class="terminal-line terminal-label">$ ./fetch-gold-price</p>
+    <div class="gold-status-row">
+      <p id="gold-status" class="gold-status" aria-live="polite">Waking up the backend if it's been idle (free tier can take up to ~40s on a cold start)...</p>
+      <button type="button" id="gold-refresh" class="gold-chip">↻ Refresh price</button>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="content-section gold-results-section" id="gold-results" style="display: none;">
+
+    <!-- PRICE SUMMARY -->
+    <div class="gold-block">
+      <p class="terminal-line terminal-label">$ cat gold_price.json</p>
+      <div id="gold-badges" class="gold-badges"></div>
+      <div id="gold-summary" class="gold-summary"></div>
+    </div>
+
+    <hr class="divider-light" />
+
+    <!-- KARAT TABLE -->
+    <div class="gold-block">
+      <p class="terminal-line terminal-label">$ cat karat_prices.json</p>
+      <div class="gold-table-wrap">
+        <table class="gold-table" id="gold-karat-table">
+          <thead>
+            <tr><th>Karat</th><th>Purity</th><th>USD / gram</th><th>INR / gram</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr class="divider-light" />
+
+    <!-- CHART -->
+    <div class="gold-block">
+      <p class="terminal-line terminal-label">$ cat trend_30d.json</p>
+      <div class="gold-chart-controls">
+        <div class="gold-chart-legend-hint">Scroll or pinch to zoom · click and drag to pan</div>
+        <div class="gold-chart-buttons">
+          <button type="button" id="gold-zoom-enable" class="gold-chip gold-chip-active">Zoom: On</button>
+          <button type="button" id="gold-zoom-disable" class="gold-chip">Zoom: Off</button>
+          <button type="button" id="gold-pan-enable" class="gold-chip gold-chip-active">Pan: On</button>
+          <button type="button" id="gold-pan-disable" class="gold-chip">Pan: Off</button>
+          <button type="button" id="gold-reset-view" class="gold-chip">Reset view</button>
+        </div>
+      </div>
+      <div class="gold-chart-wrap">
+        <canvas id="gold-chart"></canvas>
+      </div>
+    </div>
+
+    <hr class="divider-light" />
+
+    <!-- AI INSIGHTS -->
+    <div class="gold-block">
+      <p class="terminal-line terminal-label">$ cat gemini_insights.json</p>
+      <div id="gold-insights" class="gold-insights">
+        <p class="gold-status">Generating AI insights…</p>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="page">
+    <p class="footer-meta">
+      Part of the <a href="project.html">Explainable AI Financial Advisor</a> project · Backend hosted on Render, frontend on Vercel
+    </p>
+  </div>
+</footer>
+
+<script src="gold.js"></script>
+
+<!-- Vercel Web Analytics -->
+<script>
+  window.va = window.va || function () {
+    (window.vaq = window.vaq || []).push(arguments);
+  };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
