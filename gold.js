@@ -139,6 +139,7 @@ async function pollInsights(attempt = 1) {
 
     if (data.success) {
       renderInsights(data);
+      insightsRefreshBtn.disabled = false;
       return;
     }
 
@@ -148,11 +149,14 @@ async function pollInsights(attempt = 1) {
     }
 
     // Either it failed outright, or we've polled long enough — show
-    // whatever error came back rather than polling forever.
+    // whatever error came back rather than polling forever, and let the
+    // person try again.
     insightsEl.innerHTML = `<p class="gold-status is-error">${data.error || "AI insights unavailable right now."}</p>`;
+    insightsRefreshBtn.disabled = false;
   } catch (err) {
     console.error(err);
     insightsEl.innerHTML = `<p class="gold-status is-error">Could not reach the insights endpoint.</p>`;
+    insightsRefreshBtn.disabled = false;
   }
 }
 
@@ -169,11 +173,18 @@ async function refreshInsightsOnly() {
       const errBody = await response.json().catch(() => ({}));
       throw new Error(errBody.detail || `Server returned ${response.status}`);
     }
+    // Deliberately NOT re-enabling the button here — this response just
+    // confirms a background job started, it says nothing about whether
+    // Gemini actually succeeded yet. Re-enabling now was the bug: this
+    // call returns almost instantly, so the button kept unlocking
+    // within ~100ms and a few clicks could fire dozens of redundant
+    // requests in seconds (harmless to Gemini thanks to the backend's
+    // _insights_loading guard, but pointless and spammy regardless).
+    // pollInsights() re-enables it once there's an actual result.
     pollInsights();
   } catch (err) {
     console.error(err);
     insightsEl.innerHTML = `<p class="gold-status is-error">Could not start a new AI analysis: ${err.message}</p>`;
-  } finally {
     insightsRefreshBtn.disabled = false;
   }
 }
