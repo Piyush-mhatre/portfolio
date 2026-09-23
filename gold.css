@@ -167,6 +167,13 @@
 .gold-chart-wrap canvas.pan-disabled {
   cursor: default;
 }
+.gold-chart-note {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--color-muted);
+  margin: 10px 0 0 0;
+  max-width: var(--content-width);
+}
 
 /* ===== AI INSIGHTS ===== */
 .gold-insights-header {

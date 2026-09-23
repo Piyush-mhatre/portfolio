@@ -56,6 +56,26 @@ function formatINR(value) {
   return "₹" + Number(value).toLocaleString("en-IN", { maximumFractionDigits: 2 });
 }
 
+// Timestamps from the backend are naive "YYYY-MM-DD HH:MM:SS" strings —
+// Render's containers run in UTC, so that's parsed as UTC here and
+// converted to the viewer's local time for display.
+function formatServerTime(serverTimeStr) {
+  if (!serverTimeStr) return "—";
+  const date = new Date(serverTimeStr.replace(" ", "T") + "Z");
+  if (isNaN(date.getTime())) return serverTimeStr; // fall back to raw string if parsing ever fails
+
+  const diffSeconds = Math.round((Date.now() - date.getTime()) / 1000);
+  if (diffSeconds < 60) return "just now";
+  if (diffSeconds < 3600) {
+    const mins = Math.round(diffSeconds / 60);
+    return `${mins} minute${mins === 1 ? "" : "s"} ago`;
+  }
+
+  const dateStr = date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  const timeStr = date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+  return `${dateStr}, ${timeStr}`;
+}
+
 // --- Chart control chips ---
 // Unlike finplan's chart, drag is NOT used for a zoom-selection-box here
 // — it's dedicated entirely to pan, so panning and zooming don't fight
@@ -130,7 +150,7 @@ async function loadGoldPrice(forceRefresh) {
 }
 
 async function pollInsights(attempt = 1) {
-  const MAX_ATTEMPTS = 12;   // ~36s total at 3s intervals — Gemini calls are usually quick
+  const MAX_ATTEMPTS = 40;   // ~2 minutes at 3s intervals — covers the backend's worst-case retry+fallback time
   const POLL_INTERVAL_MS = 3000;
 
   try {
@@ -197,21 +217,25 @@ function renderGoldPrice(data) {
   badgesEl.innerHTML = `
     <span class="skill-tag ${isPositive ? "skill-tag-backend" : "skill-tag-core"}">${data.recommendation} trend</span>
     ${data.rate_is_estimated ? `<span class="skill-tag skill-tag-tools">Estimated USD/INR rate</span>` : ""}
-    <span class="skill-tag skill-tag-ai">Updated ${data.last_updated}</span>
+    <span class="skill-tag skill-tag-ai">Updated ${formatServerTime(data.last_updated)}</span>
   `;
 
   summaryEl.innerHTML = `
     <div class="gold-summary-card">
-      <div class="gold-summary-card-label">Per ounce (USD)</div>
-      <div class="gold-summary-card-value">${formatUSD(data.current_price.per_ounce_usd)}</div>
+      <div class="gold-summary-card-label">Per gram (INR)</div>
+      <div class="gold-summary-card-value">${formatINR(data.current_price.per_gram_inr)}</div>
+    </div>
+    <div class="gold-summary-card">
+      <div class="gold-summary-card-label">Per ounce (INR)</div>
+      <div class="gold-summary-card-value">${formatINR(data.current_price.per_ounce_inr)}</div>
     </div>
     <div class="gold-summary-card">
       <div class="gold-summary-card-label">Per gram (USD)</div>
       <div class="gold-summary-card-value">${formatUSD(data.current_price.per_gram_usd)}</div>
     </div>
     <div class="gold-summary-card">
-      <div class="gold-summary-card-label">Per gram (INR)</div>
-      <div class="gold-summary-card-value">${formatINR(data.current_price.per_gram_inr)}</div>
+      <div class="gold-summary-card-label">Per ounce (USD)</div>
+      <div class="gold-summary-card-value">${formatUSD(data.current_price.per_ounce_usd)}</div>
     </div>
     <div class="gold-summary-card">
       <div class="gold-summary-card-label">USD → INR rate</div>
@@ -227,8 +251,8 @@ function renderGoldPrice(data) {
     row.innerHTML = `
       <td class="gold-karat-cell">${karat}</td>
       <td>${KARAT_PURITY[karat] || "—"}</td>
-      <td>${formatUSD(prices.USD)}</td>
       <td>${formatINR(prices.INR)}</td>
+      <td>${formatUSD(prices.USD)}</td>
     `;
     karatTableBody.appendChild(row);
   });
@@ -336,7 +360,7 @@ function renderLiteMarkdown(text) {
 function renderInsights(data) {
   insightsEl.innerHTML = `
     ${renderLiteMarkdown(data.insights)}
-    <p style="margin-top: 14px; color: var(--color-muted); font-size: 13px;">Generated ${data.last_updated} · gold at $${data.gold_price_at_analysis}/oz</p>
+    <p style="margin-top: 14px; color: var(--color-muted); font-size: 13px;">Generated ${formatServerTime(data.last_updated)} · gold at $${data.gold_price_at_analysis}/oz</p>
   `;
 }
 
