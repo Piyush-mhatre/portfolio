@@ -310,9 +310,32 @@ function renderChart(plotData) {
   updateCursorStyle();
 }
 
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+// Gemini's insights come back with lightweight markdown (**bold**
+// section headers, occasional paragraph breaks) rather than plain
+// text. This handles just that subset — escaping HTML first so the
+// AI-generated text can never inject markup, then converting **bold**
+// to <strong> and blank-line-separated blocks into <p> tags.
+function renderLiteMarkdown(text) {
+  const escaped = escapeHtml(text);
+  const withBold = escaped.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  const paragraphs = withBold.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  return paragraphs.length > 1
+    ? paragraphs.map((p) => `<p>${p}</p>`).join("")
+    : `<p>${withBold.trim()}</p>`;
+}
+
 function renderInsights(data) {
   insightsEl.innerHTML = `
-    <p>${data.insights}</p>
+    ${renderLiteMarkdown(data.insights)}
     <p style="margin-top: 14px; color: var(--color-muted); font-size: 13px;">Generated ${data.last_updated} · gold at $${data.gold_price_at_analysis}/oz</p>
   `;
 }

@@ -176,6 +176,7 @@
   flex-wrap: wrap;
   gap: 10px;
   max-width: var(--content-width);
+  margin-bottom: 14px;
 }
 .gold-insights {
   font-size: 15px;
