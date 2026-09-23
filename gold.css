@@ -159,9 +159,24 @@
 .gold-chart-wrap canvas {
   width: 100% !important;
   height: 100% !important;
+  cursor: grab;
+}
+.gold-chart-wrap canvas.is-panning {
+  cursor: grabbing;
+}
+.gold-chart-wrap canvas.pan-disabled {
+  cursor: default;
 }
 
 /* ===== AI INSIGHTS ===== */
+.gold-insights-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: var(--content-width);
+}
 .gold-insights {
   font-size: 15px;
   color: var(--color-ink);

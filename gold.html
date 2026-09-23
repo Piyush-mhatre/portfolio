@@ -99,7 +99,10 @@
 
     <!-- AI INSIGHTS -->
     <div class="gold-block">
-      <p class="terminal-line terminal-label">$ cat gemini_insights.json</p>
+      <div class="gold-insights-header">
+        <p class="terminal-line terminal-label">$ cat gemini_insights.json</p>
+        <button type="button" id="gold-insights-refresh" class="gold-chip">↻ Refresh AI analysis</button>
+      </div>
       <div id="gold-insights" class="gold-insights">
         <p class="gold-status">Generating AI insights…</p>
       </div>

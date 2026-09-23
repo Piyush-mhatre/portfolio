@@ -13,6 +13,7 @@ const badgesEl = document.getElementById("gold-badges");
 const summaryEl = document.getElementById("gold-summary");
 const karatTableBody = document.querySelector("#gold-karat-table tbody");
 const insightsEl = document.getElementById("gold-insights");
+const insightsRefreshBtn = document.getElementById("gold-insights-refresh");
 
 const zoomEnableBtn = document.getElementById("gold-zoom-enable");
 const zoomDisableBtn = document.getElementById("gold-zoom-disable");
@@ -24,6 +25,17 @@ let chart = null;
 let isZoomEnabled = true;
 let isPanEnabled = true;
 let insightsPollTimer = null;
+const chartCanvas = document.getElementById("gold-chart");
+
+function updateCursorStyle() {
+  chartCanvas.classList.toggle("pan-disabled", !isPanEnabled);
+  if (!isPanEnabled) chartCanvas.classList.remove("is-panning");
+}
+chartCanvas.addEventListener("mousedown", () => {
+  if (isPanEnabled) chartCanvas.classList.add("is-panning");
+});
+window.addEventListener("mouseup", () => chartCanvas.classList.remove("is-panning"));
+chartCanvas.addEventListener("mouseleave", () => chartCanvas.classList.remove("is-panning"));
 
 // Purity fraction shown next to each karat, e.g. 24K = 99.9% pure gold.
 const KARAT_PURITY = {
@@ -62,7 +74,10 @@ function applyInteractionMode() {
   zoomOpts.zoom.wheel.enabled = isZoomEnabled;
   zoomOpts.zoom.pinch.enabled = isZoomEnabled;
   zoomOpts.pan.enabled = isPanEnabled;
-  chart.update();
+  chart.update("none"); // no animation — an animated re-render on every
+                         // toggle/pan frame is what made panning feel
+                         // laggy rather than 1:1 with the mouse
+  updateCursorStyle();
 }
 zoomEnableBtn.addEventListener("click", () => { isZoomEnabled = true; updateZoomButtons(); applyInteractionMode(); });
 zoomDisableBtn.addEventListener("click", () => { isZoomEnabled = false; updateZoomButtons(); applyInteractionMode(); });
@@ -143,6 +158,27 @@ async function pollInsights(attempt = 1) {
 
 refreshBtn.addEventListener("click", () => loadGoldPrice(true));
 
+async function refreshInsightsOnly() {
+  insightsRefreshBtn.disabled = true;
+  insightsEl.innerHTML = `<p class="gold-status">Generating AI insights…</p>`;
+  clearTimeout(insightsPollTimer);
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/gold/insights/refresh`, { method: "POST" });
+    if (!response.ok) {
+      const errBody = await response.json().catch(() => ({}));
+      throw new Error(errBody.detail || `Server returned ${response.status}`);
+    }
+    pollInsights();
+  } catch (err) {
+    console.error(err);
+    insightsEl.innerHTML = `<p class="gold-status is-error">Could not start a new AI analysis: ${err.message}</p>`;
+  } finally {
+    insightsRefreshBtn.disabled = false;
+  }
+}
+insightsRefreshBtn.addEventListener("click", refreshInsightsOnly);
+
 // --- Rendering ---
 function renderGoldPrice(data) {
   const isPositive = data.recommendation === "Positive";
@@ -212,7 +248,9 @@ function renderChart(plotData) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      animation: { duration: 300 },
+      animation: false, // animating every pan/zoom-driven redraw is what
+                         // made panning feel laggy instead of tracking
+                         // the mouse 1:1 — this is the actual fix
       interaction: { mode: "nearest", axis: "x", intersect: false },
       plugins: {
         legend: { display: false },
@@ -258,6 +296,7 @@ function renderChart(plotData) {
   });
 
   applyInteractionMode();
+  updateCursorStyle();
 }
 
 function renderInsights(data) {
