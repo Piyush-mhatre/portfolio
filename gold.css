@@ -176,6 +176,10 @@
 }
 
 /* ===== AI INSIGHTS ===== */
+.gold-insights-header .terminal-line {
+  margin: 0;
+}
+
 .gold-insights-header {
   display: flex;
   align-items: center;
