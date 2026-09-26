@@ -182,13 +182,13 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 10px;
-  max-width: 800px;
+  max-width: var(--prose-width);
   margin-bottom: 14px;
 }
 .gold-insights {
   font-size: 15px;
   color: var(--color-ink);
-  max-width: var(--prose-width);
+  max-width: 800px;
   line-height: 1.7;
   background: var(--color-tag-background);
   border-radius: 10px;
