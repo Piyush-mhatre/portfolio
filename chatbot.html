@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Financial Advisor — Piyush Mhatre</title>
+<meta name="description" content="Live demo: a Gemini-powered financial advisor chatbot with multi-turn memory. Part of the Explainable AI Financial Advisor project." />
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="chatbot.css" />
+<script src="warmup.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html#top" class="site-logo"><span>PM</span></a>
+  <nav class="site-nav">
+    <a href="project.html">← Back to project hub</a>
+  </nav>
+</header>
+
+<main class="page chat-page">
+
+  <section class="hero-section" style="padding-top: 56px;">
+    <p class="terminal-line terminal-label">$ python advisor_chat.py --live-demo</p>
+    <h1 class="hero-headline" style="font-size: clamp(28px, 4.5vw, 40px);">AI Financial Advisor</h1>
+    <p class="hero-intro">
+      A conversational financial advisor powered by Gemini, with real multi-turn
+      memory — it remembers what you've already asked in the conversation. Part of
+      the <strong>Explainable AI Financial Advisor</strong> project — this is the live
+      backend, not a mockup.
+    </p>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="content-section chat-section">
+    <p class="terminal-line terminal-label">$ ./advisor --chat</p>
+
+    <div class="chat-status-row">
+      <p id="chat-usage" class="chat-usage" aria-live="polite"></p>
+      <button type="button" id="chat-clear" class="chat-chip">Clear conversation</button>
+    </div>
+
+    <div id="chat-window" class="chat-window" role="log" aria-live="polite" aria-label="Conversation with the AI financial advisor"></div>
+
+    <form id="chat-form" class="chat-form" autocomplete="off">
+      <textarea id="chat-input" class="chat-input" rows="1" maxlength="2000"
+        placeholder="Ask about investing, saving, or planning…" aria-label="Your message"></textarea>
+      <button type="submit" id="chat-send" class="chat-send">Send ↗</button>
+    </form>
+
+    <p class="chat-disclaimer">
+      AI-generated, educational guidance — not professional financial advice.
+      Your conversation is stored only in this browser (localStorage), never on the
+      server, and there's a daily message limit per visitor to keep the shared free
+      API quota available for everyone.
+    </p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="page">
+    <p class="footer-meta">
+      Part of the <a href="project.html">Explainable AI Financial Advisor</a> project · Backend hosted on Render, frontend on Vercel
+    </p>
+  </div>
+</footer>
+
+<script src="chatbot.js"></script>
+
+<!-- Vercel Web Analytics -->
+<script>
+  window.va = window.va || function () {
+    (window.vaq = window.vaq || []).push(arguments);
+  };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
