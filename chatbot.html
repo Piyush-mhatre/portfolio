@@ -22,7 +22,27 @@
   </nav>
 </header>
 
-<main class="chat-page">
+<main class="chat-page" id="chat-page">
+
+  <!-- ABOUT THIS PAGE: the portfolio's terminal-line intro. Collapsible (button
+       below) so the chat can use the whole screen; the choice is remembered. -->
+  <section class="hero-section chat-about" id="chat-about">
+    <div class="chat-about-head">
+      <p class="terminal-line terminal-label">$ python advisor_chat.py --live-demo</p>
+      <button type="button" id="chat-about-toggle" class="chat-chip" aria-expanded="true" aria-controls="chat-about-body">▴ Collapse</button>
+    </div>
+    <div id="chat-about-body" class="chat-about-body">
+      <h1 class="hero-headline">AI Financial Advisor</h1>
+      <p class="hero-intro">
+        A conversational financial advisor powered by Gemini, with real multi-turn
+        memory — it remembers what you've already asked in the conversation. Part of
+        the <strong>Explainable AI Financial Advisor</strong> project — this is the live
+        backend, not a mockup.
+      </p>
+    </div>
+  </section>
+
+  <hr class="divider" />
 
   <!-- Full-width app shell: conversation list on the left, chat fills the rest.
        IDs/classes below are what chatbot.js hooks into — keep them as-is. -->
@@ -38,18 +58,9 @@
     <!-- MAIN: active conversation -->
     <div class="chat-main">
 
-      <div class="chat-topbar">
+      <!-- Narrow screens only: holds the button that opens the chat list -->
+      <div class="chat-mobilebar">
         <button type="button" id="chat-sidebar-toggle" class="chat-chip chat-sidebar-toggle" aria-expanded="false" aria-controls="chat-sidebar">☰ Chats</button>
-        <div class="chat-topbar-text">
-          <p class="terminal-line terminal-label">$ python advisor_chat.py --live-demo</p>
-          <h1 class="chat-title">AI Financial Advisor</h1>
-          <p class="chat-intro">
-            A conversational financial advisor powered by Gemini, with real multi-turn
-            memory — it remembers what you've already asked in the conversation. Part of
-            the <strong>Explainable AI Financial Advisor</strong> project — this is the live
-            backend, not a mockup.
-          </p>
-        </div>
       </div>
 
       <div id="chat-window" class="chat-window" role="log" aria-live="polite" aria-label="Conversation with the AI financial advisor"></div>
@@ -85,6 +96,28 @@
 </footer>
 
 <script src="chatbot.js"></script>
+
+<script>
+  // Collapse / expand the "about this page" section (remembered per browser).
+  (function () {
+    var page = document.getElementById("chat-page");
+    var btn = document.getElementById("chat-about-toggle");
+    var KEY = "pm_chatbot_about_collapsed";
+    function apply(collapsed) {
+      page.classList.toggle("about-collapsed", collapsed);
+      btn.setAttribute("aria-expanded", String(!collapsed));
+      btn.textContent = collapsed ? "▾ About this page" : "▴ Collapse";
+    }
+    var saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (e) {}
+    apply(saved === "1");
+    btn.addEventListener("click", function () {
+      var collapsed = !page.classList.contains("about-collapsed");
+      apply(collapsed);
+      try { localStorage.setItem(KEY, collapsed ? "1" : "0"); } catch (e) {}
+    });
+  })();
+</script>
 
 <!-- Vercel Web Analytics -->
 <script>
