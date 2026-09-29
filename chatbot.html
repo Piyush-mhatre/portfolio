@@ -22,39 +22,39 @@
   </nav>
 </header>
 
-<main class="page chat-page">
+<main class="chat-page">
 
-  <section class="hero-section" style="padding-top: 56px;">
-    <p class="terminal-line terminal-label">$ python advisor_chat.py --live-demo</p>
-    <h1 class="hero-headline" style="font-size: clamp(28px, 4.5vw, 40px);">AI Financial Advisor</h1>
-    <p class="hero-intro">
-      A conversational financial advisor powered by Gemini, with real multi-turn
-      memory — it remembers what you've already asked in the conversation. Part of
-      the <strong>Explainable AI Financial Advisor</strong> project — this is the live
-      backend, not a mockup.
-    </p>
-  </section>
+  <!-- Full-width app shell: conversation list on the left, chat fills the rest.
+       IDs/classes below are what chatbot.js hooks into — keep them as-is. -->
+  <div id="chat-layout" class="chat-layout chat-app">
 
-  <hr class="divider" />
+    <!-- SIDEBAR: separate conversations -->
+    <aside id="chat-sidebar" class="chat-sidebar" aria-label="Your conversations">
+      <button type="button" id="chat-new" class="chat-new">+ New chat</button>
+      <ul id="chat-list" class="chat-list"></ul>
+      <button type="button" id="chat-delete-all" class="chat-link">Delete all chats</button>
+    </aside>
 
-  <section class="content-section chat-section">
-    <p class="terminal-line terminal-label">$ ./advisor --chat</p>
+    <!-- MAIN: active conversation -->
+    <div class="chat-main">
 
-    <button type="button" id="chat-sidebar-toggle" class="chat-chip chat-sidebar-toggle" aria-expanded="false" aria-controls="chat-sidebar">☰ Chats</button>
+      <div class="chat-topbar">
+        <button type="button" id="chat-sidebar-toggle" class="chat-chip chat-sidebar-toggle" aria-expanded="false" aria-controls="chat-sidebar">☰ Chats</button>
+        <div class="chat-topbar-text">
+          <p class="terminal-line terminal-label">$ python advisor_chat.py --live-demo</p>
+          <h1 class="chat-title">AI Financial Advisor</h1>
+          <p class="chat-intro">
+            A conversational financial advisor powered by Gemini, with real multi-turn
+            memory — it remembers what you've already asked in the conversation. Part of
+            the <strong>Explainable AI Financial Advisor</strong> project — this is the live
+            backend, not a mockup.
+          </p>
+        </div>
+      </div>
 
-    <div id="chat-layout" class="chat-layout">
+      <div id="chat-window" class="chat-window" role="log" aria-live="polite" aria-label="Conversation with the AI financial advisor"></div>
 
-      <!-- SIDEBAR: separate conversations -->
-      <aside id="chat-sidebar" class="chat-sidebar" aria-label="Your conversations">
-        <button type="button" id="chat-new" class="chat-new">+ New chat</button>
-        <ul id="chat-list" class="chat-list"></ul>
-        <button type="button" id="chat-delete-all" class="chat-link">Delete all chats</button>
-      </aside>
-
-      <!-- MAIN: active conversation -->
-      <div class="chat-main">
-        <div id="chat-window" class="chat-window" role="log" aria-live="polite" aria-label="Conversation with the AI financial advisor"></div>
-
+      <div class="chat-composer">
         <form id="chat-form" class="chat-form" autocomplete="off">
           <textarea id="chat-input" class="chat-input" rows="1" maxlength="2000"
             placeholder="Ask about investing, saving, or planning…" aria-label="Your message"></textarea>
@@ -72,7 +72,7 @@
       </div>
 
     </div>
-  </section>
+  </div>
 
 </main>
 
