@@ -4,6 +4,21 @@
    chip-button pattern as gold.css / finplan.css.
    ===================================================================== */
 
+/* =====================================================================
+   WIDER STAGE FOR THIS PAGE ONLY
+   Every other page (finplan, gold, news, the learning center) is
+   article-style content, where a ~960px reading column is correct. A
+   live chat interface isn't reading content, it's an app — it should
+   feel like it fills the screen the way a real chat app does, not sit
+   as a small fixed box inside a document-width column with large empty
+   margins on a wide monitor. This overrides just this page's
+   .content-section (the shared rule in styles.css, max-width: 960px,
+   is untouched — every other page keeps using it as-is).
+   ===================================================================== */
+.chat-page .chat-section {
+  max-width: 1280px;
+}
+
 /* ===== SHARED SMALL PIECES ===== */
 .chat-usage {
   font-family: var(--font-mono);
@@ -55,11 +70,23 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  height: 520px;
+  /* Fills the viewport instead of a small fixed box — 520px read fine
+     on a short preview but left a lot of empty page below/around it on
+     an actual monitor. 300px roughly accounts for the header, hero, and
+     surrounding padding above this point on the page.
+     min-height (not "0", and not omitted) does two jobs at once here:
+     it's the floor so this never gets uncomfortably short on a small
+     screen, AND — just as importantly — any concrete px value (unlike
+     the default "auto") stops this grid item from auto-growing to fit
+     .chat-list's content instead of respecting `height` above, which is
+     what makes the list's own overflow-y:auto scroll correctly rather
+     than the whole sidebar stretching to fit every chat in the list. */
+  height: calc(100vh - 300px);
+  min-height: 420px;
+  max-height: 720px;
   background: var(--color-tag-background);
   border-radius: 12px;
   padding: 12px;
-  min-height: 0;
 }
 .chat-new {
   font-family: var(--font-mono);
