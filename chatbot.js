@@ -4,27 +4,38 @@
 //
 // This URL is not a secret — see finplan.js for the full explanation.
 //
-// How state works (there's no login on this portfolio):
-//   - CLIENT ID: a random ID generated once (crypto.randomUUID) and kept
-//     in localStorage. It identifies this browser to the backend's
-//     per-visitor daily message counter, and keys nothing else.
-//   - HISTORY: the visible conversation is stored in localStorage only
-//     and sent back to the backend with every message, because the
-//     backend is stateless — it keeps no conversations. Capped at the
-//     last MAX_STORED_MESSAGES so storage never grows unbounded.
+// STATE (there's no login on this portfolio, everything lives client-side):
+//   - CLIENT ID: one random ID per browser (crypto.randomUUID), kept in
+//     localStorage forever. Identifies this browser to the backend's
+//     per-visitor daily message counter — nothing else.
+//   - CONVERSATIONS: an array of separate named chats, each with its own
+//     message list, stored in localStorage. The backend is stateless —
+//     every request sends that one conversation's history back with it.
+//   - Only one conversation is ever "active" at a time; switching,
+//     renaming, and deleting are all local/instant (no backend calls).
 // =====================================================================
 const API_BASE_URL = "https://piyush-api-demo.onrender.com".replace(/\/+$/, "");
 
 const CLIENT_ID_KEY = "pm_chatbot_client_id";
-const HISTORY_KEY = "pm_chatbot_history_v1";
-const MAX_STORED_MESSAGES = 30;     // history kept + sent (backend accepts up to 60)
-const MAX_TURN_CHARS = 4000;        // backend rejects any single history turn longer than this
+const CONVERSATIONS_KEY = "pm_chatbot_conversations_v1";
+const ACTIVE_ID_KEY = "pm_chatbot_active_id_v1";
+
+const MAX_CONVERSATIONS = 25;            // matches the on-page disclaimer text
+const MAX_STORED_MESSAGES_PER_CHAT = 30; // per-chat history kept + sent (backend accepts up to 60)
+const MAX_TURN_CHARS = 4000;             // backend rejects any single history turn longer than this
+const TITLE_WORD_COUNT = 7;              // fallback title = first ~7 words of the opening message
+
+const layoutEl = document.getElementById("chat-layout");
+const sidebarEl = document.getElementById("chat-sidebar");
+const sidebarToggleBtn = document.getElementById("chat-sidebar-toggle");
+const newChatBtn = document.getElementById("chat-new");
+const listEl = document.getElementById("chat-list");
+const deleteAllBtn = document.getElementById("chat-delete-all");
 
 const windowEl = document.getElementById("chat-window");
 const formEl = document.getElementById("chat-form");
 const inputEl = document.getElementById("chat-input");
 const sendBtn = document.getElementById("chat-send");
-const clearBtn = document.getElementById("chat-clear");
 const usageEl = document.getElementById("chat-usage");
 
 const SUGGESTIONS = [
@@ -34,28 +45,27 @@ const SUGGESTIONS = [
   "PPF vs NPS — which suits a long-term goal?",
 ];
 
-let history = [];      // [{ role: "user" | "assistant", text }]
+let conversations = [];   // [{ id, title, autoTitled, createdAt, updatedAt, messages: [{role, text}] }]
+let activeId = null;      // null = a fresh, not-yet-saved draft chat (nothing sent in it yet)
 let isBusy = false;
 let limitReached = false;
 
-// --- Safe localStorage wrappers (private browsing can make it throw) ---
+// --- Safe localStorage wrappers (private browsing can make these throw) ---
 function storageGet(key) {
   try { return localStorage.getItem(key); } catch (e) { return null; }
 }
 function storageSet(key, value) {
-  try { localStorage.setItem(key, value); } catch (e) { /* storage unavailable — chat still works, just won't persist */ }
+  try { localStorage.setItem(key, value); } catch (e) { /* storage unavailable — chat still works this visit, just won't persist */ }
 }
 function storageRemove(key) {
   try { localStorage.removeItem(key); } catch (e) { /* ignore */ }
 }
 
-// --- Client ID ---
+// --- Client ID (unrelated to which conversation is open — one per browser) ---
 function generateId() {
   if (window.crypto && typeof window.crypto.randomUUID === "function") {
     return window.crypto.randomUUID();
   }
-  // Fallback for older browsers — not cryptographically strong, but this
-  // ID is only a rate-limit bucket key, not a secret or credential.
   return "c-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 12);
 }
 let cachedClientId = null;
@@ -70,29 +80,147 @@ function getClientId() {
   return id;
 }
 
-// --- History persistence ---
-function trimHistory(list) {
-  let trimmed = list.slice(-MAX_STORED_MESSAGES);
-  // Always begin with a user turn so the sent history is well-formed.
-  while (trimmed.length && trimmed[0].role !== "user") trimmed.shift();
-  return trimmed;
-}
-function loadHistory() {
+// --- Conversations: load/save ---
+function loadConversations() {
   try {
-    const parsed = JSON.parse(storageGet(HISTORY_KEY) || "[]");
+    const parsed = JSON.parse(storageGet(CONVERSATIONS_KEY) || "[]");
     if (!Array.isArray(parsed)) return [];
-    return trimHistory(
-      parsed.filter((t) => t && (t.role === "user" || t.role === "assistant") && typeof t.text === "string" && t.text)
-    );
+    return parsed.filter((c) => c && typeof c.id === "string" && Array.isArray(c.messages));
   } catch (e) {
     return [];
   }
 }
-function saveHistory() {
-  storageSet(HISTORY_KEY, JSON.stringify(history));
+function saveConversations() {
+  storageSet(CONVERSATIONS_KEY, JSON.stringify(conversations));
 }
-function buildHistoryPayload() {
-  return trimHistory(history).map((t) => ({ role: t.role, text: t.text.slice(0, MAX_TURN_CHARS) }));
+function saveActiveId() {
+  if (activeId) storageSet(ACTIVE_ID_KEY, activeId);
+  else storageRemove(ACTIVE_ID_KEY);
+}
+function getConversation(id) {
+  return conversations.find((c) => c.id === id) || null;
+}
+function getActiveConversation() {
+  return activeId ? getConversation(activeId) : null;
+}
+function sortedConversations() {
+  return [...conversations].sort((a, b) => b.updatedAt - a.updatedAt);
+}
+
+// --- Title derivation ---
+// Real Gemini-generated titles aren't wired up on the backend yet — this
+// is the "no response received" fallback the whole feature currently
+// runs on. If a later backend update ever includes a `title` field in
+// the response to a conversation's first message, applyServerTitleIfAny()
+// below already knows to adopt it (only while autoTitled is still true,
+// i.e. the person hasn't renamed the chat themselves).
+function deriveFallbackTitle(firstMessageText) {
+  const words = firstMessageText.trim().split(/\s+/);
+  const truncated = words.slice(0, TITLE_WORD_COUNT).join(" ");
+  return words.length > TITLE_WORD_COUNT ? truncated + "…" : truncated;
+}
+function applyServerTitleIfAny(conversation, body) {
+  if (conversation.autoTitled && typeof body.title === "string" && body.title.trim()) {
+    conversation.title = body.title.trim();
+  }
+}
+
+// --- Conversation CRUD ---
+function trimMessages(list) {
+  return list.slice(-MAX_STORED_MESSAGES_PER_CHAT);
+}
+function buildHistoryPayload(conversation) {
+  return trimMessages(conversation.messages).map((t) => ({ role: t.role, text: t.text.slice(0, MAX_TURN_CHARS) }));
+}
+
+function startNewChat() {
+  if (isBusy) return;
+  // Already sitting on an empty, unsaved draft — nothing to do.
+  if (activeId === null && windowEl.querySelector(".chat-empty")) {
+    collapseSidebarOnMobile();
+    return;
+  }
+  activeId = null;
+  saveActiveId();
+  renderActiveConversation();
+  renderSidebar();
+  collapseSidebarOnMobile();
+  inputEl.focus();
+}
+
+function createConversationFromFirstMessage(text) {
+  const now = Date.now();
+  const conversation = {
+    id: generateId(),
+    title: deriveFallbackTitle(text),
+    autoTitled: true,
+    createdAt: now,
+    updatedAt: now,
+    messages: [],
+  };
+  conversations.push(conversation);
+  // Keep the list bounded — drop the oldest conversation once past the cap.
+  if (conversations.length > MAX_CONVERSATIONS) {
+    conversations.sort((a, b) => a.updatedAt - b.updatedAt);
+    conversations.shift();
+  }
+  activeId = conversation.id;
+  saveConversations();
+  saveActiveId();
+  return conversation;
+}
+
+function removeConversation(id) {
+  conversations = conversations.filter((c) => c.id !== id);
+  saveConversations();
+}
+
+function switchToConversation(id) {
+  if (isBusy || id === activeId) return;
+  activeId = id;
+  saveActiveId();
+  renderActiveConversation();
+  renderSidebar();
+  collapseSidebarOnMobile();
+}
+
+function deleteConversation(id) {
+  if (isBusy) return;
+  const conversation = getConversation(id);
+  if (!conversation) return;
+  if (!window.confirm(`Delete "${conversation.title}"? This can't be undone.`)) return;
+
+  removeConversation(id);
+  if (activeId === id) {
+    const next = sortedConversations()[0];
+    activeId = next ? next.id : null;
+    saveActiveId();
+  }
+  renderActiveConversation();
+  renderSidebar();
+}
+
+function deleteAllConversations() {
+  if (isBusy || !conversations.length) return;
+  if (!window.confirm("Delete ALL your chats? This can't be undone.")) return;
+  conversations = [];
+  activeId = null;
+  saveConversations();
+  saveActiveId();
+  renderActiveConversation();
+  renderSidebar();
+}
+
+function commitRename(id, newTitle) {
+  const conversation = getConversation(id);
+  if (!conversation) return;
+  const trimmed = newTitle.trim();
+  if (trimmed) {
+    conversation.title = trimmed.slice(0, 80);
+    conversation.autoTitled = false; // a manual rename always wins from now on
+  }
+  saveConversations();
+  renderSidebar();
 }
 
 // --- Lightweight markdown ---
@@ -145,7 +273,7 @@ function renderMarkdownLite(text) {
   return out.join("");
 }
 
-// --- Rendering ---
+// --- Chat window rendering ---
 function scrollToBottom() {
   windowEl.scrollTop = windowEl.scrollHeight;
 }
@@ -212,13 +340,91 @@ function renderEmptyState() {
   });
   windowEl.appendChild(wrap);
 }
-function renderHistory() {
+function renderActiveConversation() {
   windowEl.innerHTML = "";
-  if (!history.length) {
+  const conversation = getActiveConversation();
+  if (!conversation || !conversation.messages.length) {
     renderEmptyState();
     return;
   }
-  history.forEach((turn) => addBubble(turn.role, turn.text));
+  conversation.messages.forEach((turn) => addBubble(turn.role, turn.text));
+}
+
+// --- Sidebar rendering ---
+function collapseSidebarOnMobile() {
+  layoutEl.classList.remove("sidebar-open");
+  sidebarToggleBtn.setAttribute("aria-expanded", "false");
+}
+function renderSidebar() {
+  listEl.innerHTML = "";
+
+  if (!conversations.length) {
+    const empty = document.createElement("li");
+    empty.className = "chat-list-empty";
+    empty.textContent = "No chats yet";
+    listEl.appendChild(empty);
+    return;
+  }
+
+  sortedConversations().forEach((conversation) => {
+    const li = document.createElement("li");
+    li.className = "chat-item" + (conversation.id === activeId ? " is-active" : "");
+
+    const titleBtn = document.createElement("button");
+    titleBtn.type = "button";
+    titleBtn.className = "chat-item-title";
+    titleBtn.textContent = conversation.title;
+    titleBtn.title = conversation.title;
+    titleBtn.addEventListener("click", () => switchToConversation(conversation.id));
+
+    const actions = document.createElement("span");
+    actions.className = "chat-item-actions";
+
+    const renameBtn = document.createElement("button");
+    renameBtn.type = "button";
+    renameBtn.className = "chat-item-action";
+    renameBtn.setAttribute("aria-label", "Rename chat");
+    renameBtn.textContent = "✎";
+    renameBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      beginRename(li, conversation, titleBtn);
+    });
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.type = "button";
+    deleteBtn.className = "chat-item-action is-delete";
+    deleteBtn.setAttribute("aria-label", "Delete chat");
+    deleteBtn.textContent = "✕";
+    deleteBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      deleteConversation(conversation.id);
+    });
+
+    actions.append(renameBtn, deleteBtn);
+    li.append(titleBtn, actions);
+    listEl.appendChild(li);
+  });
+}
+function beginRename(li, conversation, titleBtn) {
+  const input = document.createElement("input");
+  input.type = "text";
+  input.className = "chat-item-rename";
+  input.value = conversation.title;
+  input.maxLength = 80;
+
+  const finish = (commit) => {
+    if (commit) commitRename(conversation.id, input.value);
+    else renderSidebar(); // just redraw to discard the in-progress edit
+  };
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); finish(true); }
+    else if (e.key === "Escape") { e.preventDefault(); finish(false); }
+  });
+  input.addEventListener("blur", () => finish(true));
+
+  li.replaceChild(input, titleBtn);
+  input.focus();
+  input.select();
 }
 
 // --- Usage / limit display ---
@@ -250,7 +456,9 @@ function setBusy(busy) {
   isBusy = busy;
   sendBtn.disabled = busy || limitReached;
   inputEl.disabled = busy || limitReached;
-  clearBtn.disabled = busy;
+  newChatBtn.disabled = busy;
+  deleteAllBtn.disabled = busy;
+  sidebarEl.classList.toggle("is-locked", busy);
 }
 function extractErrorMessage(status, body) {
   if (body && typeof body.detail === "string") return body.detail;
@@ -264,7 +472,17 @@ function extractErrorMessage(status, body) {
 async function sendMessage(text) {
   if (isBusy || limitReached) return;
 
-  const historyPayload = buildHistoryPayload(); // history BEFORE this message
+  // A message typed into a fresh, unsaved draft is what actually creates
+  // the conversation — remember whether that's what's happening here, so
+  // a failed first message can be cleanly rolled back (no stray empty
+  // chat left in the sidebar).
+  const isNewConversation = activeId === null;
+  const conversation = isNewConversation ? createConversationFromFirstMessage(text) : getActiveConversation();
+  if (!conversation) return; // shouldn't happen, but don't send into nothing
+
+  const historyPayload = buildHistoryPayload(conversation); // conversation BEFORE this message
+  if (isNewConversation) renderSidebar();
+
   const userBubble = addBubble("user", text);
   const typingEl = addTypingIndicator();
   setBusy(true);
@@ -290,23 +508,33 @@ async function sendMessage(text) {
     if (!response.ok) {
       const message = extractErrorMessage(response.status, body);
       typingEl.remove();
-      // The message wasn't answered, so it isn't part of the conversation:
-      // take it back out and put the text in the box so it can be retried.
       userBubble.remove();
       inputEl.value = text;
       autoGrowInput();
       addNote(message, true);
       if (response.status === 429) setLimitReached();
+
+      // A first message that failed shouldn't leave an empty chat behind.
+      if (isNewConversation) {
+        removeConversation(conversation.id);
+        activeId = null;
+        saveActiveId();
+        renderSidebar();
+      }
       return;
     }
 
     typingEl.remove();
-    history.push({ role: "user", text });
-    history.push({ role: "assistant", text: body.reply });
-    history = trimHistory(history);
-    saveHistory();
+    conversation.messages.push({ role: "user", text });
+    conversation.messages.push({ role: "assistant", text: body.reply });
+    conversation.messages = trimMessages(conversation.messages);
+    conversation.updatedAt = Date.now();
+    applyServerTitleIfAny(conversation, body);
+    saveConversations();
+
     addBubble("assistant", body.reply);
     showUsage(body.messages_used_today, body.messages_limit_per_day);
+    renderSidebar();
   } catch (err) {
     console.error(err);
     typingEl.remove();
@@ -314,6 +542,13 @@ async function sendMessage(text) {
     inputEl.value = text;
     autoGrowInput();
     addNote("Couldn't reach the backend — check your connection and try again.", true);
+
+    if (isNewConversation) {
+      removeConversation(conversation.id);
+      activeId = null;
+      saveActiveId();
+      renderSidebar();
+    }
   } finally {
     clearTimeout(slowTimer);
     setBusy(false);
@@ -341,16 +576,18 @@ formEl.addEventListener("submit", (e) => {
   if (text) sendMessage(text);
 });
 
-clearBtn.addEventListener("click", () => {
-  if (isBusy) return;
-  if (history.length && !window.confirm("Clear this conversation? This can't be undone.")) return;
-  history = [];
-  storageRemove(HISTORY_KEY);
-  renderHistory();
-  inputEl.focus();
+newChatBtn.addEventListener("click", startNewChat);
+deleteAllBtn.addEventListener("click", deleteAllConversations);
+sidebarToggleBtn.addEventListener("click", () => {
+  const isOpen = layoutEl.classList.toggle("sidebar-open");
+  sidebarToggleBtn.setAttribute("aria-expanded", String(isOpen));
 });
 
 // --- Init ---
-history = loadHistory();
-renderHistory();
+conversations = loadConversations();
+const storedActiveId = storageGet(ACTIVE_ID_KEY);
+activeId = storedActiveId && getConversation(storedActiveId) ? storedActiveId : (sortedConversations()[0]?.id ?? null);
+saveActiveId();
+renderSidebar();
+renderActiveConversation();
 loadUsage();
