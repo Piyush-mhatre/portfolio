@@ -13,23 +13,26 @@
 <link rel="stylesheet" href="chatbot.css" />
 <script src="warmup.js"></script>
 </head>
-<body>
+<body class="chat-body">
+<script>try { if (localStorage.getItem("pm_chatbot_about_collapsed") === "1") document.body.classList.add("about-collapsed"); } catch (e) {}</script>
 
 <header class="site-header">
   <a href="index.html#top" class="site-logo"><span>PM</span></a>
   <nav class="site-nav">
+    <button type="button" id="chat-about-open" class="chat-chip chat-about-open" aria-expanded="true" aria-controls="chat-about">ⓘ About this page</button>
     <a href="project.html">← Back to project hub</a>
   </nav>
 </header>
 
-<main class="chat-page" id="chat-page">
+<main class="chat-page">
 
-  <!-- ABOUT THIS PAGE: the portfolio's terminal-line intro. Collapsible (button
-       below) so the chat can use the whole screen; the choice is remembered. -->
+  <!-- ABOUT THIS PAGE: the portfolio's terminal-line intro. "✕ Hide" removes it
+       completely (chat then gets the whole screen); the "ⓘ About this page"
+       button in the header brings it back. The choice is remembered. -->
   <section class="hero-section chat-about" id="chat-about">
     <div class="chat-about-head">
       <p class="terminal-line terminal-label">$ python advisor_chat.py --live-demo</p>
-      <button type="button" id="chat-about-toggle" class="chat-chip" aria-expanded="true" aria-controls="chat-about-body">▴ Collapse</button>
+      <button type="button" id="chat-about-toggle" class="chat-chip" aria-expanded="true" aria-controls="chat-about">✕ Hide</button>
     </div>
     <div id="chat-about-body" class="chat-about-body">
       <h1 class="hero-headline">AI Financial Advisor</h1>
@@ -42,7 +45,7 @@
     </div>
   </section>
 
-  <hr class="divider" />
+  <hr class="divider chat-divider" />
 
   <!-- Full-width app shell: conversation list on the left, chat fills the rest.
        IDs/classes below are what chatbot.js hooks into — keep them as-is. -->
@@ -98,24 +101,24 @@
 <script src="chatbot.js"></script>
 
 <script>
-  // Collapse / expand the "about this page" section (remembered per browser).
+  // Hide / show the "about this page" section (remembered per browser).
   (function () {
-    var page = document.getElementById("chat-page");
-    var btn = document.getElementById("chat-about-toggle");
+    var body = document.body;
+    var hideBtn = document.getElementById("chat-about-toggle");
+    var showBtn = document.getElementById("chat-about-open");
     var KEY = "pm_chatbot_about_collapsed";
-    function apply(collapsed) {
-      page.classList.toggle("about-collapsed", collapsed);
-      btn.setAttribute("aria-expanded", String(!collapsed));
-      btn.textContent = collapsed ? "▾ About this page" : "▴ Collapse";
+    function apply(hidden) {
+      body.classList.toggle("about-collapsed", hidden);
+      hideBtn.setAttribute("aria-expanded", String(!hidden));
+      showBtn.setAttribute("aria-expanded", String(!hidden));
     }
-    var saved = null;
-    try { saved = localStorage.getItem(KEY); } catch (e) {}
-    apply(saved === "1");
-    btn.addEventListener("click", function () {
-      var collapsed = !page.classList.contains("about-collapsed");
-      apply(collapsed);
-      try { localStorage.setItem(KEY, collapsed ? "1" : "0"); } catch (e) {}
-    });
+    function set(hidden) {
+      apply(hidden);
+      try { localStorage.setItem(KEY, hidden ? "1" : "0"); } catch (e) {}
+    }
+    apply(body.classList.contains("about-collapsed"));
+    hideBtn.addEventListener("click", function () { set(true); });
+    showBtn.addEventListener("click", function () { set(false); });
   })();
 </script>
 

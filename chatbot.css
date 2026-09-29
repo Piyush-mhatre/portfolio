@@ -34,23 +34,41 @@
 }
 
 /* ===== PAGE SHELL =====
-   Top of the page keeps the portfolio's usual look (about section + divider,
-   using styles.css). Below the divider the chat app breaks out of the fixed
-   960px column and spans the full screen width. Its height is one screen
-   minus the sticky header (64px ≈ its height), so once it's scrolled into
-   view the whole chat fits on screen. --chat-column is the reading width of
-   the messages/composer, centered inside the wide chat area. */
+   The whole page is exactly one screen tall: sticky header, then (optional)
+   about section + divider, then the chat, then a slim footer line. The chat
+   takes whatever height is left, so it never runs off the bottom of the
+   screen, and it grows to fill everything once the about section is hidden.
+   Below the divider the chat breaks out of styles.css's fixed 960px column
+   and spans the full width. --chat-column is the reading width of the
+   messages/composer, centered inside the wide chat area. */
+.chat-body {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+.chat-body .site-header { flex-shrink: 0; }
 .chat-page {
   --chat-column: 860px;
-  --about-bar-h: 58px; /* height of the collapsed about bar + divider */
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* only kicks in on very short screens */
 }
 .chat-layout {
+  flex: 1 0 320px;
   display: grid;
   grid-template-columns: 280px minmax(0, 1fr);
-  height: calc(100dvh - 64px);
-  min-height: 480px;
+  grid-template-rows: minmax(0, 1fr);
   position: relative;
 }
+/* Footer shrinks to one slim line so it doesn't steal chat space */
+.chat-body .site-footer {
+  flex-shrink: 0;
+  padding: 8px 0 10px 0;
+  border-top: 1px solid var(--color-hairline);
+}
+.chat-body .footer-meta { margin: 0; font-size: 11px; text-align: center; }
 .chat-main {
   display: flex;
   flex-direction: column;
@@ -58,9 +76,22 @@
   min-height: 0;
 }
 
-/* Collapse the about section down to just its terminal line + toggle button,
-   and grow the chat by exactly that much so everything still fits one screen. */
-.chat-about { padding-top: 56px; }
+/* About section: compact version of the portfolio hero. Hiding it removes it
+   (and the divider) entirely — nothing is left behind. The ".hero-section:hover"
+   floating-card effect from styles.css only makes sense over the dot-wave
+   animation, which this page doesn't have, so it's switched off here. */
+.chat-about {
+  flex-shrink: 0;
+  padding: 36px 32px 28px 32px;
+  max-height: 50dvh;
+  overflow-y: auto;
+}
+.chat-about:hover,
+.chat-about:focus-within {
+  background-color: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
+}
 .chat-about-head {
   display: flex;
   align-items: center;
@@ -68,13 +99,22 @@
   gap: 12px;
 }
 .chat-about-head .terminal-line { margin: 0; }
-.chat-about-body { margin-top: 20px; }
-.chat-about .hero-headline { font-size: clamp(28px, 4.5vw, 40px); }
-.chat-page.about-collapsed .chat-about { padding-top: 12px; padding-bottom: 12px; }
-.chat-page.about-collapsed .chat-about-body { display: none; }
-.chat-page.about-collapsed .chat-layout {
-  height: calc(100dvh - 64px - var(--about-bar-h));
+.chat-about-body { margin-top: 18px; }
+.chat-about .hero-headline {
+  font-size: clamp(26px, 4vw, 36px);
+  margin-bottom: 12px;
 }
+.chat-about .hero-intro {
+  font-size: 15.5px;
+  margin-bottom: 0;
+}
+.chat-divider { flex-shrink: 0; width: 100%; }
+
+.chat-about-open { display: none; }
+.chat-body.about-collapsed .chat-about,
+.chat-body.about-collapsed .chat-divider { display: none; }
+.chat-body.about-collapsed .chat-about-open { display: inline-block; }
+.site-nav { align-items: center; }
 
 /* Narrow screens only: slim bar holding the "☰ Chats" button */
 .chat-mobilebar {
@@ -408,7 +448,7 @@
 /* Narrow screens: sidebar becomes a slide-over panel opened by "☰ Chats"
    (chatbot.js toggles .sidebar-open on #chat-layout). */
 @media (max-width: 800px) {
-  .chat-layout { grid-template-columns: 1fr; height: calc(100dvh - 56px); }
+  .chat-layout { grid-template-columns: 1fr; }
   .chat-mobilebar { display: block; }
   .chat-sidebar {
     display: none;
@@ -423,8 +463,7 @@
   .chat-layout.sidebar-open .chat-sidebar { display: flex; }
 }
 @media (max-width: 640px) {
-  .chat-about { padding: 40px 20px 32px 20px; }
-  .chat-page.about-collapsed .chat-about { padding: 12px 20px; }
+  .chat-about { padding: 24px 20px 20px 20px; }
   .chat-window { padding-top: 20px; gap: 20px; }
   .chat-msg-user { max-width: 88%; }
 }
