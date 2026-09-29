@@ -4,20 +4,12 @@
    chip-button pattern as gold.css / finplan.css.
    ===================================================================== */
 
-/* ===== STATUS ROW (remaining messages + clear button) ===== */
-.chat-status-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 14px;
-}
+/* ===== SHARED SMALL PIECES ===== */
 .chat-usage {
   font-family: var(--font-mono);
   font-size: 12px;
   color: var(--color-muted);
-  margin: 0;
+  margin: 12px 0 0 0;
   min-height: 1.2em;
 }
 .chat-chip {
@@ -40,6 +32,155 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* ===== LAYOUT: conversation list on the left, active chat on the right =====
+   The sidebar is given the same fixed height as the chat window so the two
+   columns line up; the list inside it scrolls on its own. */
+.chat-layout {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.chat-main { min-width: 0; }
+
+/* Only shown on narrow screens, where the sidebar is collapsed by default */
+.chat-sidebar-toggle {
+  display: none;
+  margin-bottom: 14px;
+}
+
+/* ===== SIDEBAR ===== */
+.chat-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 520px;
+  background: var(--color-tag-background);
+  border-radius: 12px;
+  padding: 12px;
+  min-height: 0;
+}
+.chat-new {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-paper);
+  background: var(--color-ink);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+.chat-new:hover { background: var(--color-accent); }
+.chat-new:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.chat-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.chat-list-empty {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-muted);
+  text-align: center;
+  padding: 18px 8px;
+}
+
+.chat-item {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding-right: 4px;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+.chat-item:hover { background: #ECEBE5; }
+.chat-item.is-active {
+  background: var(--color-paper);
+  border-color: var(--color-hairline);
+}
+.chat-item-title {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-ink);
+  background: none;
+  border: none;
+  padding: 9px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chat-item-actions {
+  display: flex;
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+.chat-item:hover .chat-item-actions,
+.chat-item:focus-within .chat-item-actions,
+.chat-item.is-active .chat-item-actions { opacity: 1; }
+/* Touch screens have no hover, so the actions must always be reachable */
+@media (hover: none) {
+  .chat-item-actions { opacity: 1; }
+}
+.chat-item-action {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-muted);
+  background: none;
+  border: none;
+  border-radius: 5px;
+  padding: 6px 7px;
+  cursor: pointer;
+  transition: color 150ms ease, background 150ms ease;
+}
+.chat-item-action:hover { color: var(--color-ink); background: var(--color-hairline); }
+.chat-item-action.is-delete:hover { color: #A8324D; }
+
+.chat-item-rename {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border: 1px solid var(--color-accent);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin: 2px 0 2px 2px;
+}
+.chat-item-rename:focus { outline: none; }
+
+.chat-link {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--color-muted);
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  text-align: center;
+}
+.chat-link:hover { color: #A8324D; }
+.chat-link:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* While a reply is in flight, switching/deleting chats is blocked (a
+   reply arriving into a different chat than it was asked in would be
+   confusing) — the sidebar dims to show that. */
+.chat-sidebar.is-locked .chat-list,
+.chat-sidebar.is-locked .chat-link { opacity: 0.55; pointer-events: none; }
 
 /* ===== CHAT WINDOW ===== */
 .chat-window {
@@ -220,6 +361,12 @@
   max-width: var(--content-width);
 }
 
+@media (max-width: 800px) {
+  .chat-layout { grid-template-columns: 1fr; }
+  .chat-sidebar-toggle { display: inline-block; }
+  .chat-sidebar { display: none; height: 260px; margin-bottom: 14px; }
+  .chat-layout.sidebar-open .chat-sidebar { display: flex; }
+}
 @media (max-width: 640px) {
   .chat-window { height: 420px; padding: 14px; }
   .chat-msg { max-width: 92%; }

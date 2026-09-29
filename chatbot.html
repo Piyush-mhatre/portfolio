@@ -40,25 +40,38 @@
   <section class="content-section chat-section">
     <p class="terminal-line terminal-label">$ ./advisor --chat</p>
 
-    <div class="chat-status-row">
-      <p id="chat-usage" class="chat-usage" aria-live="polite"></p>
-      <button type="button" id="chat-clear" class="chat-chip">Clear conversation</button>
+    <button type="button" id="chat-sidebar-toggle" class="chat-chip chat-sidebar-toggle" aria-expanded="false" aria-controls="chat-sidebar">☰ Chats</button>
+
+    <div id="chat-layout" class="chat-layout">
+
+      <!-- SIDEBAR: separate conversations -->
+      <aside id="chat-sidebar" class="chat-sidebar" aria-label="Your conversations">
+        <button type="button" id="chat-new" class="chat-new">+ New chat</button>
+        <ul id="chat-list" class="chat-list"></ul>
+        <button type="button" id="chat-delete-all" class="chat-link">Delete all chats</button>
+      </aside>
+
+      <!-- MAIN: active conversation -->
+      <div class="chat-main">
+        <div id="chat-window" class="chat-window" role="log" aria-live="polite" aria-label="Conversation with the AI financial advisor"></div>
+
+        <form id="chat-form" class="chat-form" autocomplete="off">
+          <textarea id="chat-input" class="chat-input" rows="1" maxlength="2000"
+            placeholder="Ask about investing, saving, or planning…" aria-label="Your message"></textarea>
+          <button type="submit" id="chat-send" class="chat-send">Send ↗</button>
+        </form>
+
+        <p id="chat-usage" class="chat-usage" aria-live="polite"></p>
+        <p class="chat-disclaimer">
+          AI-generated, educational guidance — not professional financial advice.
+          Your conversations are stored only in this browser (localStorage), never on the
+          server — up to 25 chats, and clearing your browser data removes them. There's a
+          daily message limit per visitor, shared across all your chats, to keep the free
+          API quota available for everyone.
+        </p>
+      </div>
+
     </div>
-
-    <div id="chat-window" class="chat-window" role="log" aria-live="polite" aria-label="Conversation with the AI financial advisor"></div>
-
-    <form id="chat-form" class="chat-form" autocomplete="off">
-      <textarea id="chat-input" class="chat-input" rows="1" maxlength="2000"
-        placeholder="Ask about investing, saving, or planning…" aria-label="Your message"></textarea>
-      <button type="submit" id="chat-send" class="chat-send">Send ↗</button>
-    </form>
-
-    <p class="chat-disclaimer">
-      AI-generated, educational guidance — not professional financial advice.
-      Your conversation is stored only in this browser (localStorage), never on the
-      server, and there's a daily message limit per visitor to keep the shared free
-      API quota available for everyone.
-    </p>
   </section>
 
 </main>
