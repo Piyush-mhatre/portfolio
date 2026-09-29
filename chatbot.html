@@ -19,7 +19,7 @@
 <header class="site-header">
   <a href="index.html#top" class="site-logo"><span>PM</span></a>
   <nav class="site-nav">
-    <button type="button" id="chat-about-open" class="chat-chip chat-about-open" aria-expanded="true" aria-controls="chat-about">ⓘ About this page</button>
+    <button type="button" id="chat-about-open" class="chat-chip chat-about-open" aria-expanded="true" aria-controls="chat-about"><svg class="chat-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="4.9" r="0.95" fill="currentColor"/><path d="M8 7.3v4.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>About this page</button>
     <a href="project.html">← Back to project hub</a>
   </nav>
 </header>
@@ -86,6 +86,15 @@
       </div>
 
     </div>
+
+    <!-- Sidebar drag-to-resize handle + hide/show tab (positioned over the seam) -->
+    <div id="chat-resizer" class="chat-resizer" role="separator" aria-orientation="vertical"
+         aria-label="Resize chat list" aria-controls="chat-sidebar" tabindex="0"
+         aria-valuemin="200" aria-valuemax="480" aria-valuenow="280"></div>
+    <button type="button" id="chat-sidebar-collapse" class="chat-sidebar-collapse"
+            aria-expanded="true" aria-controls="chat-sidebar" aria-label="Hide chat list" title="Hide chat list">
+      <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M8 2 4 6l4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
   </div>
 
 </main>
@@ -119,6 +128,79 @@
     apply(body.classList.contains("about-collapsed"));
     hideBtn.addEventListener("click", function () { set(true); });
     showBtn.addEventListener("click", function () { set(false); });
+  })();
+</script>
+
+<script>
+  // Sidebar: drag the seam to resize, click the tab to hide / show (both remembered).
+  (function () {
+    var layout = document.getElementById("chat-layout");
+    var handle = document.getElementById("chat-resizer");
+    var toggle = document.getElementById("chat-sidebar-collapse");
+    if (!layout || !handle || !toggle) return;
+    var W_KEY = "pm_chatbot_sidebar_width", C_KEY = "pm_chatbot_sidebar_collapsed";
+    var MIN = 200, MAX = 480, DEFAULT = 280;
+
+    function clamp(w) {
+      var max = Math.min(MAX, Math.max(MIN, layout.clientWidth * 0.5));
+      return Math.max(MIN, Math.min(max, w));
+    }
+    function setWidth(w, save) {
+      w = Math.round(clamp(w));
+      layout.style.setProperty("--sidebar-w", w + "px");
+      handle.setAttribute("aria-valuenow", String(w));
+      if (save) { try { localStorage.setItem(W_KEY, String(w)); } catch (e) {} }
+    }
+    function setCollapsed(c, save) {
+      layout.classList.toggle("sidebar-collapsed", c);
+      toggle.setAttribute("aria-expanded", String(!c));
+      var label = c ? "Show chat list" : "Hide chat list";
+      toggle.setAttribute("aria-label", label);
+      toggle.title = label;
+      if (save) { try { localStorage.setItem(C_KEY, c ? "1" : "0"); } catch (e) {} }
+    }
+    function currentWidth() {
+      return parseInt(layout.style.getPropertyValue("--sidebar-w"), 10) || DEFAULT;
+    }
+
+    var saved = DEFAULT, collapsed = false;
+    try {
+      saved = parseInt(localStorage.getItem(W_KEY), 10) || DEFAULT;
+      collapsed = localStorage.getItem(C_KEY) === "1";
+    } catch (e) {}
+    setWidth(saved, false);
+    setCollapsed(collapsed, false);
+
+    toggle.addEventListener("click", function () {
+      setCollapsed(!layout.classList.contains("sidebar-collapsed"), true);
+    });
+
+    var dragging = false;
+    handle.addEventListener("pointerdown", function (e) {
+      dragging = true;
+      layout.classList.add("is-resizing");
+      try { handle.setPointerCapture(e.pointerId); } catch (err) {}
+      e.preventDefault();
+    });
+    handle.addEventListener("pointermove", function (e) {
+      if (!dragging) return;
+      setWidth(e.clientX - layout.getBoundingClientRect().left, false);
+    });
+    function stop(e) {
+      if (!dragging) return;
+      dragging = false;
+      layout.classList.remove("is-resizing");
+      try { handle.releasePointerCapture(e.pointerId); } catch (err) {}
+      setWidth(currentWidth(), true);
+    }
+    handle.addEventListener("pointerup", stop);
+    handle.addEventListener("pointercancel", stop);
+    handle.addEventListener("dblclick", function () { setWidth(DEFAULT, true); });
+    handle.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowLeft") { setWidth(currentWidth() - 16, true); e.preventDefault(); }
+      else if (e.key === "ArrowRight") { setWidth(currentWidth() + 16, true); e.preventDefault(); }
+    });
+    window.addEventListener("resize", function () { setWidth(currentWidth(), false); });
   })();
 </script>
 

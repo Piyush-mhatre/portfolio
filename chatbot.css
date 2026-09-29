@@ -45,6 +45,7 @@
   height: 100dvh;
   display: flex;
   flex-direction: column;
+  overflow: hidden; /* the page itself never scrolls; only the chat list and messages do */
 }
 .chat-body .site-header { flex-shrink: 0; }
 .chat-page {
@@ -56,7 +57,9 @@
   overflow-y: auto; /* only kicks in on very short screens */
 }
 .chat-layout {
-  flex: 1 0 320px;
+  flex: 1 1 0;      /* was "1 0 320px": the chat could not shrink, so the page overflowed and scrolled */
+  min-height: 240px;
+  overflow: hidden;
   display: grid;
   grid-template-columns: 280px minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
@@ -83,7 +86,7 @@
 .chat-about {
   flex-shrink: 0;
   padding: 36px 32px 28px 32px;
-  max-height: 50dvh;
+  max-height: 34dvh; /* leaves room so the chat + composer always fit on screen */
   overflow-y: auto;
 }
 .chat-about:hover,
@@ -129,6 +132,8 @@
   flex-direction: column;
   gap: 10px;
   height: 100%;
+  min-width: 0;
+  overflow: hidden;
   background: var(--color-tag-background);
   border-right: 1px solid var(--color-hairline);
   padding: 14px 12px;
@@ -390,6 +395,7 @@
    Same centered track as the messages. The textarea and Send button live
    inside one rounded box that highlights when focused. */
 .chat-composer {
+  flex-shrink: 0;
   padding: 0 max(20px, calc((100% - var(--chat-column)) / 2)) 14px;
 }
 .chat-form {
@@ -466,4 +472,75 @@
   .chat-about { padding: 24px 20px 20px 20px; }
   .chat-window { padding-top: 20px; gap: 20px; }
   .chat-msg-user { max-width: 88%; }
+}
+
+/* ===== CRISP "ABOUT" ICON (replaces the blurry ⓘ glyph) ===== */
+.chat-chip .chat-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  vertical-align: -2px;
+  flex-shrink: 0;
+}
+
+/* ===== RESIZABLE / COLLAPSIBLE SIDEBAR (desktop only) =====
+   chatbot.js is untouched: the width lives in the --sidebar-w variable on
+   #chat-layout, and collapsing just adds .sidebar-collapsed to it. */
+.chat-resizer,
+.chat-sidebar-collapse { display: none; }
+
+@media (min-width: 801px) {
+  .chat-layout { grid-template-columns: var(--sidebar-w, 280px) minmax(0, 1fr); }
+  .chat-layout.sidebar-collapsed { grid-template-columns: 0 minmax(0, 1fr); }
+  .chat-layout.sidebar-collapsed .chat-sidebar {
+    visibility: hidden;
+    padding: 0;
+    border-right: none;
+  }
+
+  /* Drag handle on the seam between sidebar and chat */
+  .chat-resizer {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--sidebar-w, 280px) - 3px);
+    width: 6px;
+    z-index: 4;
+    cursor: col-resize;
+    touch-action: none;
+    background: transparent;
+    transition: background 150ms ease;
+  }
+  .chat-resizer:hover,
+  .chat-resizer:focus-visible,
+  .chat-layout.is-resizing .chat-resizer { background: var(--color-accent); outline: none; opacity: 0.5; }
+  .chat-layout.sidebar-collapsed .chat-resizer { display: none; }
+  .chat-layout.is-resizing { user-select: none; cursor: col-resize; }
+
+  /* Small tab on the seam: hides / shows the sidebar */
+  .chat-sidebar-collapse {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    left: var(--sidebar-w, 280px);
+    transform: translateY(-50%);
+    z-index: 5;
+    width: 18px;
+    height: 48px;
+    padding: 0;
+    color: var(--color-muted);
+    background: var(--color-tag-background);
+    border: 1px solid var(--color-hairline);
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    transition: color 150ms ease, border-color 150ms ease;
+  }
+  .chat-sidebar-collapse:hover { color: var(--color-ink); border-color: var(--color-accent); }
+  .chat-sidebar-collapse svg { width: 12px; height: 12px; transition: transform 150ms ease; }
+  .chat-layout.sidebar-collapsed .chat-sidebar-collapse { left: 0; }
+  .chat-layout.sidebar-collapsed .chat-sidebar-collapse svg { transform: rotate(180deg); }
 }
