@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Investment Recommender — Piyush Mhatre</title>
+<meta name="description" content="Live demo: a Decision Tree investment recommender with explanations, part of the Explainable AI Financial Advisor project." />
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="investment_recommender.css" />
+<script src="warmup.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html#top" class="site-logo"><span>PM</span></a>
+  <nav class="site-nav">
+    <a href="project.html">← Back to project hub</a>
+  </nav>
+</header>
+
+<main class="page rec-page">
+
+  <section class="hero-section" style="padding-top: 56px;">
+    <p class="terminal-line terminal-label">$ python recommender.py --live-demo</p>
+    <h1 class="hero-headline" style="font-size: clamp(28px, 4.5vw, 40px);">Investment Recommender</h1>
+    <p class="hero-intro">
+      Tell it your risk tolerance, liquidity needs, tax preference and time horizon, and a
+      scikit-learn <strong>Decision Tree</strong> picks the best match from 14 Indian investment
+      options, with three alternatives and a plain-English reason for each. Part of the
+      <strong>Explainable AI Financial Advisor</strong> project — this is the live backend,
+      not a mockup. Note: with only 14 options, the tree works like a nearest-match
+      lookup, not a model trained on real market data.
+    </p>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="content-section">
+    <p class="terminal-line terminal-label">$ ./recommend --profile</p>
+
+    <form id="rec-form" class="rec-form">
+      <div class="rec-field">
+        <span class="rec-label">Risk tolerance</span>
+        <div class="rec-seg" role="radiogroup" aria-label="Risk tolerance">
+          <label><input type="radio" name="risk" value="low" /><span>Low</span></label>
+          <label><input type="radio" name="risk" value="medium" checked /><span>Medium</span></label>
+          <label><input type="radio" name="risk" value="high" /><span>High</span></label>
+        </div>
+      </div>
+      <div class="rec-field">
+        <span class="rec-label">Liquidity preference</span>
+        <div class="rec-seg" role="radiogroup" aria-label="Liquidity preference">
+          <label><input type="radio" name="liquidity" value="low" /><span>Low</span></label>
+          <label><input type="radio" name="liquidity" value="medium" checked /><span>Medium</span></label>
+          <label><input type="radio" name="liquidity" value="high" /><span>High</span></label>
+        </div>
+      </div>
+      <div class="rec-field">
+        <span class="rec-label">Need tax benefits?</span>
+        <div class="rec-seg" role="radiogroup" aria-label="Tax benefits">
+          <label><input type="radio" name="tax" value="no" checked /><span>No</span></label>
+          <label><input type="radio" name="tax" value="yes" /><span>Yes</span></label>
+        </div>
+      </div>
+      <div class="rec-field">
+        <label class="rec-label" for="duration">Investment horizon (years)</label>
+        <input type="number" id="duration" name="duration" class="rec-number" value="5" min="1" max="40" required />
+      </div>
+      <button type="submit" class="rec-submit">Get recommendation ↗</button>
+    </form>
+
+    <p id="rec-status" class="rec-status" aria-live="polite"></p>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="content-section" id="rec-results" style="display: none;">
+    <p class="terminal-line terminal-label">$ cat recommendation.json</p>
+    <div id="rec-top"></div>
+    <h2 class="rec-subhead">Alternatives</h2>
+    <div id="rec-alts" class="rec-alts"></div>
+    <p class="rec-note">
+      Educational demo only — returns shown are illustrative figures from the dataset,
+      not forecasts or financial advice.
+    </p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="page">
+    <p class="footer-meta">
+      Part of the <a href="project.html">Explainable AI Financial Advisor</a> project · Backend hosted on Render, frontend on Vercel
+    </p>
+  </div>
+</footer>
+
+<script src="investment_recommender.js"></script>
+
+<!-- Vercel Web Analytics -->
+<script>
+  window.va = window.va || function () {
+    (window.vaq = window.vaq || []).push(arguments);
+  };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
