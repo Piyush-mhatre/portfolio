@@ -1,51 +1,82 @@
-# Piyush Mhatre — Portfolio
+# Piyush Mhatre — Portfolio & Interactive Showcase
 
-Static site. No build step, no dependencies. Just `index.html`, `styles.css`, `script.js`.
+[![Site Status](https://img.shields.io/badge/status-live-success.svg)](#)
+[![Stack](https://img.shields.io/badge/stack-HTML5%20%7C%20CSS3%20%7C%20Vanilla%20JS-blue.svg)](#)
+[![Visualization](https://img.shields.io/badge/charts-Chart.js%20%7C%20Canvas%20API-orange.svg)](#)
+[![Design](https://img.shields.io/badge/style-Minimalist%20Terminal-lightgrey.svg)](#)
 
-## Run it locally right now
+A modern, responsive personal portfolio and interactive frontend showcase. Built with a terminal-inspired developer aesthetic, fluid typography, and zero-dependency vanilla web technologies.
 
-Just double-click `index.html` — it opens in your browser. That's it, no server needed.
-
-(If fonts don't load because you're offline, the page still works — it falls back to system fonts cleanly.)
-
----
-
-## Host it for free — Option A: GitHub Pages (simplest, recommended for v1)
-
-1. Create a new **public** GitHub repo — name it `portfolio` (or anything you like).
-2. Upload these 3 files (`index.html`, `styles.css`, `script.js`) to the repo root.
-   - Easiest way: on the repo page, click **Add file → Upload files**, drag all three in, commit.
-3. Go to the repo's **Settings → Pages**.
-4. Under "Build and deployment," set **Source: Deploy from a branch**, **Branch: main**, folder **/ (root)**. Save.
-5. Wait ~1 minute. Your site will be live at:
-   `https://<your-github-username>.github.io/<repo-name>/`
-   e.g. `https://piyush-mhatre.github.io/portfolio/`
-6. Any time you edit a file and push/upload again, the live site updates automatically in ~1 minute.
+In addition to serving as a developer portfolio, this repository houses the interactive frontend client and demo hub for multiple modules from the **Explainable AI Financial Advisor** platform (published at IEEE CONIT 2025).
 
 ---
 
-## Host it for free — Option B: Vercel (if you want it under Vercel instead)
+## ⚡ Key Highlights
 
-1. Push the same 3 files to a GitHub repo (same as steps 1-2 above).
-2. Go to vercel.com → sign up/log in with your GitHub account.
-3. Click **Add New → Project**, select your repo.
-4. Framework preset: choose **Other** (it's a plain static site, no build command needed).
-5. Click **Deploy**.
-6. You'll get a live URL like `https://portfolio-piyush.vercel.app`.
-7. Every future push to `main` auto-redeploys.
+- **Terminal-Inspired Minimalist UI:** Clean, developer-focused aesthetic featuring interactive shell prompts (`whoami`, `cat about.md`, `ls ./projects`), custom typography (`JetBrains Mono`, `Inter`, `Newsreader`), and smooth reveal animations.
+- **Interactive Dot-Wave Canvas:** A custom HTML5 Canvas background animation with real-time mouse interaction and physics.
+- **Zero-Dependency Architecture:** Pure vanilla HTML5, CSS3, and modern ES6+ JavaScript. No complex build pipelines, node modules, or bundler overhead.
+- **Smart Backend Warmup:** Includes a lightweight, non-blocking background ping (`warmup.js`) to preemptively wake remote serverless/cloud backends and eliminate cold-start latencies for visitors.
+- **Accessibility & Motion First:** Responsive mobile-to-desktop layouts utilizing CSS Grid and Flexbox, with native support for `prefers-reduced-motion`.
 
 ---
 
-## What to update as you go
+## 🚀 Interactive Feature Modules
 
-- **Project GitHub links** — currently all point to your GitHub profile as a placeholder. Once each project has its own repo (or a proper README describing it), update the `href` on each "View on GitHub ↗" link in `index.html` to point directly to that repo.
-- **Live demo line** — on the Explainable AI Financial Advisor project, there's a line: `Live demo coming soon — currently rebuilding on FastAPI + React`. Once that rebuild is deployed (Render/Railway), replace that `<span class="project__note">` with a real `<a href="your-deployed-url">Live demo ↗</a>` link, styled the same as the GitHub link next to it.
-- **New projects** — copy one `<article class="project fade-section">...</article>` block in `index.html`, edit the year/title/description/tags/links. The tag colors are controlled by class name: `tag--lang`, `tag--backend`, `tag--db`, `tag--ai`, `tag--core`, `tag--tools` (see `styles.css` for the color mapping if you want to adjust).
+The repository includes a dedicated project hub (`project.html`) and dedicated client interfaces for various data-driven tools:
+
+| Module | Interface | Description | Tech / APIs |
+| :--- | :--- | :--- | :--- |
+| **Portfolio Homepage** | `index.html` | Core personal portfolio, experience log, skill taxonomy, and project index. | Vanilla JS, Canvas API |
+| **Financial Planner** | `finplan.html` | 30-year multi-asset compound growth projection across 12 Indian asset classes. | Chart.js, REST API |
+| **Financial Learning Center** | `finlearn.html` | Interactive knowledge base covering asset classes, risk factors, and investment concepts. | Vanilla JS, CSS Grid |
+| **Stock Analysis** | `stock_analysis.html` | Ticker analysis featuring Piotroski F-Score metrics, candlestick charts, and trend forecasting. | Chart.js, YFinance API |
+| **AI Advisor Chatbot** | `chatbot.html` | Conversational financial assistant with multi-turn memory and local chat persistence. | Gemini API, LocalStorage |
+| **Gold Price Tracker** | `gold.html` | Real-time multi-currency gold price tracker by karat with 30-day historical trend charts. | Chart.js, Market APIs |
+| **News Sentiment Analyzer**| `news.html` | Financial news search categorized by positive, neutral, or negative sentiment. | BERT NLP Pipeline |
+| **Investment Recommender** | `investment_recommender.html` | Risk tolerance and preference-based asset allocation recommendation tool. | Scikit-learn Models |
 
 ---
 
-## Notes
+## 🛠️ Tech Stack
 
-- All fonts load from Google Fonts via CDN (Newsreader, Inter, JetBrains Mono) — requires internet on first load, cached after.
-- Site respects `prefers-reduced-motion` — the scroll fade-in is disabled automatically for users who've turned off animations at the OS level.
-- No analytics, no tracking, no cookies — nothing to configure or disclose.
+- **Markup & Layout:** Semantic HTML5, CSS3 (Custom Properties, Flexbox, CSS Grid)
+- **Scripting & Logic:** JavaScript (ES6+), Fetch API, LocalStorage
+- **Graphics & Visualization:** HTML5 Canvas, [Chart.js](https://www.chartjs.org/)
+- **Typography:** [Google Fonts](https://fonts.google.com/) (`Newsreader`, `Inter`, `JetBrains Mono`)
+- **Hosting & Deployment:** Static hosting compatible (Vercel, GitHub Pages, Netlify)
+
+---
+
+## 📂 Project Structure
+
+```text
+portfolio/
+├── index.html                   # Main portfolio homepage
+├── styles.css                   # Global styling, theme variables, and responsive layout
+├── script.js                    # Homepage logic, scroll reveal, and dot-wave canvas
+├── warmup.js                    # Background silent health-check ping for backend APIs
+│
+├── project.html                 # Interactive project hub & module selector
+├── project.css                  # Project hub layout styling
+│
+├── finplan.html / .css / .js    # Financial Planner simulation & Chart.js engine
+├── finlearn.html / .css / .js   # Financial learning knowledge base
+├── stock_analysis.html / .css / .js # Stock metrics, forecasting, and candlestick visualizer
+├── chatbot.html / .css / .js    # AI financial advisor chat interface
+├── gold.html / .css / .js       # Precious metals pricing & historical charts
+├── news.html / .css / .js       # Financial news sentiment analyzer
+└── investment_recommender.html / .css / .js # Machine learning investment recommender
+```
+
+---
+
+## 👤 Author
+
+**Piyush Santosh Mhatre**  
+*Python & Backend Developer | IEEE Published Researcher*
+
+- **GitHub:** [@Piyush-mhatre](https://github.com/Piyush-mhatre)
+- **LinkedIn:** [Piyush Mhatre](https://www.linkedin.com/in/piyush-mhatre-399536267/)
+- **LeetCode:** [@piyush_11122](https://leetcode.com/u/piyush_11122/)
+- **Email:** piyushsm121212@gmail.com
